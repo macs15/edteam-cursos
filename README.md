@@ -2,7 +2,7 @@
 
 ## Scripts disponibles
 
-In the project directory, you can run:
+En este proyecto, debes correr los siguientes comandos para el correcto funcionamiento de la app:
 
 ### `npm start`
 
