@@ -1,0 +1,84 @@
+{
+  "cursos": [
+    {
+      "id": 1,
+      "titulo": "Python desde cero",
+      "author": "Pablo España",
+      "descripcion": "Aprende los fundamentos de uno de los lenguajes más importantes de la actualidad y crea un administrador de contraseñas.",
+      "precio": 23,
+      "disponible": false
+    },
+    {
+      "id": 2,
+      "titulo": "Arduino desde cero",
+      "author": "Andres Nino",
+      "descripcion": "Aprende a usar la plataforma de desarrollo de hardware libre más usada de los sistemas embebidos y automatiza tus proyectos electrónicos.",
+      "precio": 29,
+      "disponible": false
+    },
+    {
+      "id": 3,
+      "titulo": "Crea y sube tu primera app a Google Play",
+      "author": "Maximiliano Burgos",
+      "descripcion": "Rick y Morty serán los protagonistas de tu propia app en Android Nativo que, además, podrás subir a Google Play.",
+      "precio": 51,
+      "disponible": true
+    },
+    {
+      "id": 4,
+      "titulo": "La ruta del desarrollador web",
+      "author": "Alvaro Felipe",
+      "descripcion": "Aprende todos los roles y rutas que existen para ser un desarrollador web profesional en 2021.",
+      "precio": 0,
+      "disponible": true
+    },
+    {
+      "id": 5,
+      "titulo": "Unity desde cero",
+      "author": "Darwin Palma",
+      "descripcion": "Domina la mejor herramienta de desarrollo de videojuegos en tiempo real y crea tu primer videojuego multiplataforma.",
+      "precio": 16,
+      "disponible": true
+    },
+    {
+      "id": 6,
+      "titulo": "Crea tu propio Slack con SignalR",
+      "author": "Miguel Teheran",
+      "descripcion": "En este taller construirás una sala de chat con React.js y .NET Core desde 0, conectando backend con frontend y luego haciendo que se actualice en tiempo real usando SignalR.",
+      "precio": 28,
+      "disponible": true
+    },
+    {
+      "id": 7,
+      "titulo": "Fundamentos de AWS",
+      "author": "Gerardo Castro",
+      "descripcion": "Conviértete en un Arquitecto Cloud dominando el Cloud Provider líder por +10 años consecutivos.",
+      "precio": 40,
+      "disponible": true
+    },
+    {
+      "id": 8,
+      "titulo": "Productividad y trabajo en equipo con Asana",
+      "author": "Alvaro Felipe",
+      "descripcion": "Organiza y supervisa el trabajo y objetivos de equipos de todo tamaño desde cualquier lugar del mundo",
+      "precio": 42,
+      "disponible": true
+    },
+    {
+      "id": 9,
+      "titulo": "Programación para niños con Scratch",
+      "author": "Marina Charris",
+      "descripcion": "Ingresa al maravilloso mundo de la programación y desarrolla habilidades para el futuro.",
+      "precio": 28,
+      "disponible": true
+    },
+    {
+      "id": 10,
+      "titulo": "Svelte desde cero",
+      "author": "Diego Adrian Barra Paredes",
+      "descripcion": "Desarrolla tus apps con la librería más reciente que utiliza un enfoque distinto al momento de crear interfaces de usuario.",
+      "precio": 16,
+      "disponible": true
+    }
+  ]
+}
