@@ -99,6 +99,16 @@
       "author": "Alexys Lozada",
       "disponible": true,
       "poster": "http://localhost:3001//cursos/spring"
+    },
+    {
+      "nombre": "Server side render con Go",
+      "descripcion": "Domina el SSR con las herramientas que te ofrece Go, mejora el SEO y la carga de tus sitios web.",
+      "precio": 16,
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/e737f2e3-92b3-400e-8d82-1b19e0277012.png",
+      "id": "go-ssr",
+      "author": "Alexys Lozada",
+      "disponible": true,
+      "poster": "http://localhost:3001/cursos/go-ssr"
     }
   ]
 }

@@ -1,4 +1,8 @@
 :root {
+    --azul: #5e5eff;
+    --rojo: #ff4141;
+    --texto: #697477;
+    --verde: green;
     margin: 0;
     padding: 0;
 }
@@ -13,6 +17,13 @@ html {
   box-sizing: border-box;
   height: 100%;
   font-size: 62.5%;
+}
+h1,h2,h3,p, label {
+  color: #2a3b47;
+  font-family: Arial, Helvetica, sans-serif;
+}
+h1 {
+  font-weight: 600;
 }
 body {
   font-size: 16px;

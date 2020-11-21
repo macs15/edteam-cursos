@@ -1,38 +1,86 @@
 import styled from "@emotion/styled";
-import React from "react";
+import React, { useState } from "react";
 import Navegacion from "./Layout/Navegacion";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axiosClient from "../config/axios";
 
 
 const Formulario = () => {
+  const [disponible, setDisponible] = useState(null);
+  const [mensaje, setMensaje] = useState(null);
+
   const formik = useFormik({
     initialValues: {
-      titulo: "",
+      nombre: "",
       descripcion: "",
       precio: 0,
-      disponible: "",
+      imagen: "",
+      id: "",
+      author: ""
     },
     validationSchema: Yup.object({
-      titulo: Yup.string().required("El nombre no puede ir vacío"),
+      nombre: Yup.string().required("El nombre no puede ir vacío"),
       descripcion: Yup.string()
         .required("Una descripción es requerida")
         .max(180, "La descripción es muy larga (180 caracteres máximo)"),
       precio: Yup.number(),
-      disponible: Yup.bool().required(
-        "Debes especificar si está disponible este curso"
-      ),
+      imagen: Yup.string().required('Debes añadir un link de imagen para el curso').url('Ingresa un url válido'),
+      id: Yup.string().required('El slug es obligatorio'),
+      author: Yup.string().required('El autor del curso es necesario')
     }),
+    onSubmit: async values => {
+      if(!disponible) {
+        setMensaje({data: 'Debes especificar si está disponible este curso', tipo: 'error'})
+        return;
+      };
 
-    onSubmit: values => {
-      console.log(values);
+      const { nombre, descripcion, precio, imagen, id, author } = values;
+      // genera el poster concatenando las variables
+      const poster = `${process.env.REACT_APP_BASE_URL}cursos/${id}`
+
+      try {
+        const resultado = await axiosClient.post('/cursos', {
+          nombre,
+          descripcion,
+          precio,
+          imagen,
+          id: id.trim(),
+          author,
+          disponible,
+          poster
+        });
+        
+        if(resultado.status === 201) {
+          setMensaje({data: 'Curso creado correctamente!'})
+        }
+        formik.resetForm();
+
+        setTimeout(() => {
+          setMensaje(null);
+        }, 3000);
+      } catch (error) {
+        // feedback para el usuario
+        if(error.response.status === 500) {
+          setMensaje({data: 'No se pudo agregar el curso, asegurate de que no sea un slug repetido', tipo: 'error'})
+        } else {
+          setMensaje({
+            data: 'Ups, Algo salió mal en nuestro servidor',
+            tipo: 'error'
+          });
+        }
+        setTimeout(() => {
+          setMensaje(null);
+        }, 5000);
+      }
     },
   });
-
+  
   const handleClickRadio = value => {
-    console.log(value);
-    formik.setFieldValue('disponible', value);
-    formik.setFieldTouched('disponible', true);
+    // convierte el valor a boolean
+    let boolean = (value === 'true');
+
+    setDisponible(boolean);
   }
   return (
     <>
@@ -45,17 +93,17 @@ const Formulario = () => {
               <input
                 className="input"
                 id="title"
-                name="titulo"
-                placeholder="Titulo"
+                name="nombre"
+                placeholder="Nombre del curso"
                 type="text"
-                value={formik.values.titulo}
+                value={formik.values.nombre}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
             </div>
 
-            {formik.touched.titulo && formik.errors.titulo ? (
-              <Error error={formik.errors.titulo} />
+            {formik.touched.nombre && formik.errors.nombre ? (
+              <Error error={formik.errors.nombre} tipo='error' />
             ) : null}
 
             <div className="input-container">
@@ -70,7 +118,24 @@ const Formulario = () => {
             </div>
 
             {formik.touched.descripcion && formik.errors.descripcion ? (
-              <Error error={formik.errors.descripcion} />
+              <Error error={formik.errors.descripcion} tipo='error' />
+            ) : null}
+
+            <div className="input-container">
+              <input
+                className="input"
+                id="author"
+                name="author"
+                placeholder="Autor del curso"
+                type="text"
+                value={formik.values.author}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+            </div>
+
+            {formik.touched.author && formik.errors.author ? (
+              <Error error={formik.errors.author} tipo='error' />
             ) : null}
 
             <p className="label-text">Precio del curso</p>
@@ -88,7 +153,43 @@ const Formulario = () => {
             </div>
 
             {formik.touched.precio && formik.errors.precio ? (
-              <Error error={formik.errors.precio} />
+              <Error error={formik.errors.precio} tipo='error' />
+            ) : null}
+
+            <label htmlFor="slug" className="label-text">Slug del curso</label>
+            <div className="input-container price">
+              <input
+                id="slug"
+                className="input"
+                name="id"
+                placeholder="Ej: python, scracth, google-play-app"
+                type="text"
+                value={formik.values.id}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+            </div>
+
+            {formik.touched.id && formik.errors.id ? (
+              <Error error={formik.errors.id} tipo='error' />
+            ) : null}
+
+            <label htmlFor="imagen" className="label-text">URL de imagen</label>
+            <div className="input-container price">
+              <input
+                id="imagen"
+                className="input"
+                name="imagen"
+                placeholder="ej: http://example.com"
+                type="text"
+                value={formik.values.imagen}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+            </div>
+
+            {formik.touched.imagen && formik.errors.imagen ? (
+              <Error error={formik.errors.imagen} tipo='error' />
             ) : null}
 
             <p className="label-text">Disponibilidad del curso</p>
@@ -96,33 +197,35 @@ const Formulario = () => {
               <div className="input-radio">
                 <input
                   id="disponible"
-                  name="disponibilidad"
+                  name="disponible"
                   type="radio"
                   value={true}
                   onClick={event => handleClickRadio(event.target.value)}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  // onChange={formik.handleChange}
                 />
-                <label htmlFor="">Disponible</label>
+                <label htmlFor="disponible">Disponible</label>
               </div>
               <div className="input-radio">
                 <input
                   id="proximamente"
-                  name="disponibilidad"
+                  name="disponible"
                   type="radio"
                   value={false}
                   onClick={event => handleClickRadio(event.target.value)}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
                 />
-                <label>Próximamente</label>
+                <label htmlFor="proximamente">Próximamente</label>
               </div>
             </div>
 
             {formik.touched.disponible && formik.errors.disponible ? (
-              <Error error={formik.errors.disponible} />
+              <Error error={formik.errors.disponible} tipo='error' />
             ) : null}
           </div>
+              {/* Respuestas del servidor */}
+          {mensaje && 
+            <Error error={mensaje.data} tipo={mensaje.tipo} />
+          }
+
           <BtnContainer>
             <button type="submit" className="btn btn-save">
               Guardar
@@ -139,9 +242,9 @@ const Formulario = () => {
 
 export default Formulario;
 
-const Error = ({ error }) => {
+const Error = ({ error, tipo }) => {
   return (
-    <div className="error-container">
+    <div className={tipo}>
       <p>{error}</p>
     </div>
   );
@@ -173,7 +276,7 @@ const FormContainer = styled.main`
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        margin: 2rem 0;
+        margin: 1rem 0 2rem 0;
 
         .input {
           width: 100%;
@@ -253,7 +356,7 @@ const FormContainer = styled.main`
       }
     }
 
-    .error-container {
+    .error {
       margin: 1rem;
       background-color: rgba(254, 226, 226, 1);
       padding: 1rem 2rem;
@@ -292,10 +395,10 @@ const BtnContainer = styled.div`
     border-radius: 5px;
     color: #fff;
     &.btn-save {
-      background-color: green;
+      background-color: var(--verde);
     }
     &.btn-reset {
-      background-color: #347cf5;
+      background-color: var(--azul);
     }
   }
 `;

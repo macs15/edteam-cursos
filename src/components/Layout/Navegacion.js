@@ -19,17 +19,29 @@ const NavBar = styled.nav`
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
     var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 
+  .links-container {
+      display: flex;
+  }
+
   .logo {
       font-size: 2.5rem;
       color: #333;
       font-weight: 700;
   }
   .link {
-    background-color: #5e5eff;
     padding: 1rem 2rem;
     border-radius: 5px;
+    color: #5e5eff;
     a {
+      color: #5e5eff;
+    }
+    &.btn {
+      background-color: #5e5eff;
       color: #fff;
+      margin-left: 3rem;
+      a {
+        color: #fff;
+      }
     }
   }
 `;
@@ -44,11 +56,17 @@ const Navegacion = () => {
         </a>
       </div>
       <div>
-        {location.pathname !== "/nuevo-curso" && (
-          <li className="link">
-            <a href="/nuevo-curso">Nuevo curso</a>
+        
+          <div className="links-container">
+            <li className="link">
+            <a href="/cursos">Cursos</a>
           </li>
-        )}
+          {location.pathname !== "/cursos/nuevo-curso" && (
+          <li className="link btn">
+            <a href="/cursos/nuevo-curso">Nuevo curso</a>
+          </li>
+          )}
+          </div>
       </div>
     </NavBar>
   );

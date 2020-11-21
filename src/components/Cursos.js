@@ -1,52 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
-import Curso from './Curso';
-import axiosClient from '../config/axios';
+import Navegacion from './Layout/Navegacion';
+import ListadoCursos from './ListadoCursos';
 
-const Container = styled.main`
+const Container = styled.div`
     width: 100%;
+    min-width: 100vh;
     height: 100%;
-    min-height: 100%;
-
-    .course-container {
-        max-width: 1200px;
-        width: 95%;
-        margin: 0 auto;
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
+    padding: 0 2rem;
+    background-color: #fbfbfe;
+    margin-top: 70px;
 `;
-
-const Cursos = () => {
-    const [cursos, setCursos] = useState([]);
-
-    useEffect(() => {
-        obtenerCursos();
-    }, []);
-
-    const obtenerCursos = async () => {
-        try {
-            const resultado = await axiosClient.get('/cursos');
-
-            setCursos(resultado.data);
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
+const Home = () => {
     return ( 
         <Container>
-            <ul className="course-container">
-                { cursos.length > 0 ? 
-                cursos.map( curso => (
-                    <Curso key={curso.id} curso={curso} />
-                )) : (
-                    <div> No hay cursos para mostrar</div>
-                )}
-            </ul>
+            <Navegacion />
+            <ListadoCursos/>
         </Container>
-    );
+     );
 }
  
-export default Cursos;
+export default Home;

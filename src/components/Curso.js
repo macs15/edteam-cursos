@@ -1,104 +1,142 @@
-import styled from '@emotion/styled';
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import axiosClient from "../config/axios";
+import Navegacion from "./Layout/Navegacion";
+import styled from "@emotion/styled";
 
-const CardContainer = styled.li`
-    list-style: none;
-    width: 20%;
-    min-height: 380px;
-    background-color: #fff;
-    margin: 0 1rem 2rem 1rem;
-    display: flex;
-    flex-direction: column;
-    --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-    border-radius: 0 0 10px 10px;
-    .img-container {
-        width: 100%;
-        img {
-            border-radius: 10px 10px 0 0;
-            width: 100%;
-            background-position: center;
-            background-size: cover; 
-        }
-    }
+const Container = styled.main`
+  margin-top: 70px;
 
-    .details-container {
-        padding: 2rem;
-        .title-container {
-            a {
-                text-decoration: none;
-            }
-        }
-    }
-    .footer {
+  .loading-text {
+    margin: 1rem auto;
+    text-align: center;
+  }
+
+  .container {
+     min-height: 400px; 
+     background-color: #eff3f5;
+     padding: 4rem;
+
+     div {
+       max-width: 1200px;
         display: flex;
-        justify-content: space-between;
-        margin-top: auto;
-        height: auto;
-        padding: 1rem;
-        background-color: #e0e1e1;
+        flex-wrap: nowrap;
+        flex-direction: row-reverse;
+        margin: 0 auto;
+
+        .img-container {
+          width: 50%;
+          background-size: cover;
+          img {
+            border-radius: 10px;
+            width: 100%;
+          }
+        }
+        .info-container {
+          width: 50%;
+          display: flex;
+          flex-direction: column;
+          padding: 0 2rem;
+
+          .title {
+            padding: 2rem;
+          }
+          .description {
+            color: #697477;
+          }
+          .tag {
+            margin-top: 4rem;
+            color: #fff;
+            display: inline-block;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: auto;
+            margin-top: auto;
+
+            &.soon {
+              background-color: #347cf5;
+            }
+            &.aviable {
+              background-color: green;
+            }
+          }
+        }
+     }
     }
 `;
-const ButtonsContainer = styled.div`
-    display: flex;
-    justify-content: space-around;
-    padding: 1rem;
 
-    .btn-container {
+const NotFound = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
-    }
-    .btn {
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 5px;
-        color: #fff;
-
-        &.btn-edit {
-            background-color: green;
-        }
-        &.btn-delete {
-            background-color: #ff4141;
-        }
-    }
+  a {
+    background-color: var(--azul);
+    color: #fff;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    margin-top: 5rem;
+  }
 `;
 
-const Curso = ({curso}) => {
-    const { titulo, author, disponible, precio, descripcion } = curso;
+const Curso = () => {
+  const [curso, setCurso] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const location = useLocation(); // obtiene ubicacion actual para el get con axios
 
-    return ( 
-        <CardContainer>
-            <div className="img-container">
-                <img src='https://edteam-media.s3.amazonaws.com/courses/medium/85d3d7e4-19db-4cff-a4cb-cbead813b6b5.png' alt='titulo' />
+  useEffect(() => {
+    obtenerCurso();
+
+    //eslint-disable-next-line
+  }, []);
+
+  const obtenerCurso = async () => {
+    try {
+      const resultado = await axiosClient.get(`${location.pathname}`);
+
+      setCurso(resultado.data); // obtiene y guarda el curso actual
+      setCargando(false); // oculta 'cargando'
+    } catch (error) {
+      // console.log(error);
+      setCargando(false);
+    }
+  };
+
+  // retorna mensaje cargando mientras hace la consulta
+  if (cargando)
+    return (
+      <Container>
+        <Navegacion />
+        <p className="loading-text">Cargando...</p>
+      </Container>
+    );
+  
+  return (
+    <Container>
+      <Navegacion />
+      {curso ? 
+      <div className="container">
+          <div>
+            <div className="img-container"><img src={curso.imagen} alt={curso.titulo} /></div>
+            <div className="info-container">
+              <h1 className="title">{curso.nombre}</h1>
+              <p className="description">{curso.descripcion}</p>
+              {curso.disponible ? <span className="tag aviable">Disponible</span> : <span className="tag soon">Próximamente</span>}
             </div>
-            <div className="details-container">
-                <div className="title-container">
-                    <a href="#">
-                        <h3 title={titulo}>{titulo}</h3>
-                    </a>
-                    <p title={descripcion}>{descripcion}</p>
-                </div>
-                <div className="">
-                    <p>{disponible ? 'Disponible' : 'Próximamente'}</p>
-                </div>
-            </div>
-            <footer className="footer">
-                <div>
-                    <p>{author}</p>
-                </div>
-                <div>
-                    <p>{precio} USD</p>
-                </div>
-            </footer>
-            <ButtonsContainer>
-                <div className="btn-container">
-                    <button className="btn btn-edit">Editar</button>
-                </div>
-                <div className="btn-container">
-                    <button className="btn btn-delete">Eliminar</button>
-                </div>
-            </ButtonsContainer>
-        </CardContainer>
-     );
-}
- 
+          </div>
+      </div> 
+      
+      
+      
+      : 
+      <NotFound>
+        <h2> Parece que no encontramos lo que estás buscando...</h2>  
+        <a href="/cursos">Volver a los cursos</a>
+      </NotFound>}
+    </Container>
+  );
+};
+
 export default Curso;
