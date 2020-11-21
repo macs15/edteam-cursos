@@ -10,13 +10,14 @@
       "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/85d3d7e4-19db-4cff-a4cb-cbead813b6b5.png"
     },
     {
-      "id": "arduino",
       "nombre": "Arduino desde cero",
-      "author": "Andres Nino",
       "descripcion": "Aprende a usar la plataforma de desarrollo de hardware libre más usada de los sistemas embebidos y automatiza tus proyectos electrónicos.",
       "precio": 29,
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/1bada4e8-4bab-4be8-8f2e-83e285515187.png",
+      "id": "arduino",
+      "author": "Andres Nino",
       "disponible": false,
-      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/1bada4e8-4bab-4be8-8f2e-83e285515187.png"
+      "poster": "http://localhost:3001/cursos/arduino"
     },
     {
       "id": "app-google-play",
@@ -73,13 +74,14 @@
       "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/f02fc743-189f-4f00-a1af-1716961d5a36.png"
     },
     {
-      "id": "scratch",
       "nombre": "Programación para niños con Scratch",
-      "author": "Marina Charris",
       "descripcion": "Ingresa al maravilloso mundo de la programación y desarrolla habilidades para el futuro.",
-      "precio": 28,
+      "precio": "",
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/a1a1984b-d7c7-4fdd-b176-6647819d3d2e.png",
+      "id": "scratch",
+      "author": "Marina Charris",
       "disponible": true,
-      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/a1a1984b-d7c7-4fdd-b176-6647819d3d2e.png"
+      "poster": "http://localhost:3001/cursos/scratch"
     },
     {
       "id": "svelte",
@@ -93,12 +95,32 @@
     {
       "nombre": "Spring desde cero",
       "descripcion": "Domina los conceptos y funcionalidades básicas del framework más usado en Java y desarrolla servicios web de manera rápida y eficaz.",
-      "precio": 0,
-      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/e737f2e3-92b3-400e-8d82-1b19e0277012.png",
+      "precio": 14,
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/6cbc514c-1e04-4bf4-8beb-fa595f363d9d.png",
       "id": "spring",
+      "author": "Lucas Moyano",
+      "disponible": false,
+      "poster": "http://localhost:3001/cursos/spring"
+    },
+    {
+      "nombre": "Server side render con Go",
+      "descripcion": "Domina el SSR con las herramientas que te ofrece Go, mejora el SEO y la carga de tus sitios web.",
+      "precio": 16,
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/e737f2e3-92b3-400e-8d82-1b19e0277012.png",
+      "id": "go-ssr",
       "author": "Alexys Lozada",
+      "disponible": false,
+      "poster": "http://localhost:3001/cursos/go-ssr"
+    },
+    {
+      "nombre": "Motion Graphics para redes sociales",
+      "descripcion": "Elabora gráficos animados para resaltar tus publicaciones en redes sociales.",
+      "precio": 16,
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/a027fe1a-fcf4-4a1c-8717-c3d52d5f9879.jpg",
+      "id": "motiongraphics",
+      "author": "Paúl Alayo",
       "disponible": true,
-      "poster": "http://localhost:3001//cursos/spring"
+      "poster": "http://localhost:3001/cursos/motiongraphics"
     }
   ]
 }
