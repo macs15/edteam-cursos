@@ -1,93 +1,168 @@
 import styled from "@emotion/styled";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navegacion from "./Layout/Navegacion";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axiosClient from "../config/axios";
-
+import CursoContext from "../context/CursoContext";
+import { useHistory } from "react-router-dom";
+import { FormContainer } from './utils/styledComponents';
 
 const Formulario = () => {
+  const [initialValues, setInitialValues] = useState({
+    nombre: "",
+    descripcion: "",
+    precio: 0,
+    imagen: "",
+    id: "",
+    author: "",
+  });
+  // radio separado porque perdía el booleano y lo cambiaba a string
   const [disponible, setDisponible] = useState(null);
   const [mensaje, setMensaje] = useState(null);
 
+  const { cursoseleccionado, actualizarCurso, comprobarCurso } = useContext(CursoContext);
+
+  const history = useHistory(); // router react
+
+  useEffect(() => {
+    if (cursoseleccionado !== null) {
+      // cargamos los valores del curso editando
+      setInitialValues(cursoseleccionado);
+      setDisponible(cursoseleccionado.disponible);
+    } else {
+      setInitialValues({
+        nombre: "",
+        descripcion: "",
+        precio: 0,
+        imagen: "",
+        id: "",
+        author: "",
+        disponible: "",
+      });
+      setDisponible(null);
+    }
+  }, [cursoseleccionado]);
+
   const formik = useFormik({
-    initialValues: {
-      nombre: "",
-      descripcion: "",
-      precio: 0,
-      imagen: "",
-      id: "",
-      author: ""
-    },
+    // recarga el form cuando cambian sus valores iniciales
+    enableReinitialize: true,
+    // valores cargados desde el state
+    initialValues,
     validationSchema: Yup.object({
       nombre: Yup.string().required("El nombre no puede ir vacío"),
       descripcion: Yup.string()
         .required("Una descripción es requerida")
         .max(180, "La descripción es muy larga (180 caracteres máximo)"),
       precio: Yup.number(),
-      imagen: Yup.string().required('Debes añadir un link de imagen para el curso').url('Ingresa un url válido'),
-      id: Yup.string().required('El slug es obligatorio'),
-      author: Yup.string().required('El autor del curso es necesario')
+      imagen: Yup.string()
+        .required("Debes añadir un link de imagen para el curso")
+        .url("Ingresa un url válido"),
+      id: Yup.string().required("El slug es obligatorio"),
+      author: Yup.string().required("El autor del curso es necesario"),
     }),
-    onSubmit: async values => {
-      if(!disponible) {
-        setMensaje({data: 'Debes especificar si está disponible este curso', tipo: 'error'})
-        return;
-      };
 
-      const { nombre, descripcion, precio, imagen, id, author } = values;
-      // genera el poster concatenando las variables
-      const poster = `${process.env.REACT_APP_BASE_URL}cursos/${id}`
+    onSubmit: async (values) => {
+      setMensaje({ data: "cargando...", tipo: "info" });
 
-      try {
-        const resultado = await axiosClient.post('/cursos', {
-          nombre,
-          descripcion,
-          precio,
-          imagen,
-          id: id.trim(),
-          author,
-          disponible,
-          poster
+      if (disponible === null) {
+        setMensaje({
+          data: "Debes especificar si está disponible este curso",
+          tipo: "error",
         });
-        
-        if(resultado.status === 201) {
-          setMensaje({data: 'Curso creado correctamente!'})
-        }
-        formik.resetForm();
-
+        // limpiamos la pantalla
         setTimeout(() => {
           setMensaje(null);
         }, 3000);
+        return;
+      }
+
+      const { nombre, descripcion, precio, imagen, id, author } = values;
+      // genera el poster concatenando las variables
+      const poster = `${process.env.REACT_APP_BASE_URL}cursos/${id}`;
+      const curso = {
+        nombre,
+        descripcion,
+        precio,
+        imagen,
+        id: id.trim().toLowerCase(),
+        author,
+        disponible,
+        poster,
+      }
+
+      // comprobamos que no exista el id(slug);
+      const existeCurso = await comprobarCurso(id);
+
+      try {
+
+        // comprueba si se usará post o put
+        if (cursoseleccionado) {
+
+          if (existeCurso) {
+            // para asegurarnos de que exista el slug antes de acceder a su attr id
+            if (existeCurso.id !== cursoseleccionado.id) {
+              formik.setFieldError(
+                "id",
+                "Slug existente, por favor intenta con uno distinto"
+              );
+              setMensaje(null);
+              return;
+            }
+            // axios put
+            actualizarCurso(id, curso);
+
+            window.alert('Curso actualizado correctamente!');
+            history.push(`/cursos/${id}`);
+          }
+        } else {
+
+          if (existeCurso) {
+            formik.setFieldError(
+              "id",
+              "Slug existente, por favor intenta con uno distinto"
+            );
+            setMensaje(null);
+            return;
+          }
+          const resultado = await axiosClient.post("/cursos", curso);
+
+          if (resultado.status === 201) {
+            window.alert("Curso creado correctamente!");
+          }
+          formik.resetForm();
+          
+          history.push(`/cursos/${resultado.data.id}`);
+          setTimeout(() => {
+            setMensaje(null);
+          }, 3000);
+        }
       } catch (error) {
         // feedback para el usuario
-        if(error.response.status === 500) {
-          setMensaje({data: 'No se pudo agregar el curso, asegurate de que no sea un slug repetido', tipo: 'error'})
-        } else {
-          setMensaje({
-            data: 'Ups, Algo salió mal en nuestro servidor',
-            tipo: 'error'
-          });
-        }
+        setMensaje({
+          data: "Ups, Algo salió mal en nuestro servidor",
+          tipo: "error",
+        });
         setTimeout(() => {
           setMensaje(null);
-        }, 5000);
+        }, 3000);
       }
     },
   });
-  
-  const handleClickRadio = value => {
+
+  const handleClickRadio = (value) => {
     // convierte el valor a boolean
-    let boolean = (value === 'true');
+    let boolean = value === "true";
 
     setDisponible(boolean);
-  }
+  };
+
   return (
     <>
       <Navegacion />
       <FormContainer>
         <form onSubmit={formik.handleSubmit}>
-          <h2>Datos del curso</h2>
+          <h2 className="form-title">Datos del curso</h2>
           <div className="inputs-container">
             <div className="input-container">
               <input
@@ -103,7 +178,7 @@ const Formulario = () => {
             </div>
 
             {formik.touched.nombre && formik.errors.nombre ? (
-              <Error error={formik.errors.nombre} tipo='error' />
+              <Error error={formik.errors.nombre} tipo="error" />
             ) : null}
 
             <div className="input-container">
@@ -118,7 +193,7 @@ const Formulario = () => {
             </div>
 
             {formik.touched.descripcion && formik.errors.descripcion ? (
-              <Error error={formik.errors.descripcion} tipo='error' />
+              <Error error={formik.errors.descripcion} tipo="error" />
             ) : null}
 
             <div className="input-container">
@@ -135,7 +210,7 @@ const Formulario = () => {
             </div>
 
             {formik.touched.author && formik.errors.author ? (
-              <Error error={formik.errors.author} tipo='error' />
+              <Error error={formik.errors.author} tipo="error" />
             ) : null}
 
             <p className="label-text">Precio del curso</p>
@@ -153,10 +228,12 @@ const Formulario = () => {
             </div>
 
             {formik.touched.precio && formik.errors.precio ? (
-              <Error error={formik.errors.precio} tipo='error' />
+              <Error error={formik.errors.precio} tipo="error" />
             ) : null}
 
-            <label htmlFor="slug" className="label-text">Slug del curso</label>
+            <label htmlFor="slug" className="label-text">
+              Slug del curso
+            </label>
             <div className="input-container price">
               <input
                 id="slug"
@@ -171,10 +248,12 @@ const Formulario = () => {
             </div>
 
             {formik.touched.id && formik.errors.id ? (
-              <Error error={formik.errors.id} tipo='error' />
+              <Error error={formik.errors.id} tipo="error" />
             ) : null}
 
-            <label htmlFor="imagen" className="label-text">URL de imagen</label>
+            <label htmlFor="imagen" className="label-text">
+              URL de imagen
+            </label>
             <div className="input-container price">
               <input
                 id="imagen"
@@ -189,7 +268,7 @@ const Formulario = () => {
             </div>
 
             {formik.touched.imagen && formik.errors.imagen ? (
-              <Error error={formik.errors.imagen} tipo='error' />
+              <Error error={formik.errors.imagen} tipo="error" />
             ) : null}
 
             <p className="label-text">Disponibilidad del curso</p>
@@ -200,8 +279,8 @@ const Formulario = () => {
                   name="disponible"
                   type="radio"
                   value={true}
-                  onClick={event => handleClickRadio(event.target.value)}
-                  // onChange={formik.handleChange}
+                  checked={disponible === true}
+                  onChange={(event) => handleClickRadio(event.target.value)}
                 />
                 <label htmlFor="disponible">Disponible</label>
               </div>
@@ -211,20 +290,19 @@ const Formulario = () => {
                   name="disponible"
                   type="radio"
                   value={false}
-                  onClick={event => handleClickRadio(event.target.value)}
+                  checked={disponible === false}
+                  onChange={(event) => handleClickRadio(event.target.value)}
                 />
                 <label htmlFor="proximamente">Próximamente</label>
               </div>
             </div>
 
             {formik.touched.disponible && formik.errors.disponible ? (
-              <Error error={formik.errors.disponible} tipo='error' />
+              <Error error={formik.errors.disponible} tipo="error" />
             ) : null}
           </div>
-              {/* Respuestas del servidor */}
-          {mensaje && 
-            <Error error={mensaje.data} tipo={mensaje.tipo} />
-          }
+          {/* Respuestas del servidor */}
+          {mensaje && <Error error={mensaje.data} tipo={mensaje.tipo} />}
 
           <BtnContainer>
             <button type="submit" className="btn btn-save">
@@ -234,6 +312,9 @@ const Formulario = () => {
               Reset
             </button>
           </BtnContainer>
+          <div className="btn-cancel">
+            <a href="/cursos">Cancelar</a>
+          </div>
         </form>
       </FormContainer>
     </>
@@ -250,139 +331,6 @@ const Error = ({ error, tipo }) => {
   );
 };
 
-const FormContainer = styled.main`
-  max-width: 800px;
-  width: 100%;
-  margin: 0 auto;
-  background-color: #fff;
-  margin-top: 70px;
-  form {
-    border-radius: 10px;
-    padding: 70px;
-    --tw-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .inputs-container {
-      width: 100%;
-
-      .input-container {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        margin: 1rem 0 2rem 0;
-
-        .input {
-          width: 100%;
-          appearance: none;
-          padding: 1rem 1.5rem;
-          color: #333;
-          border: 1px solid rgba(3, 3, 3, 0.1);
-          line-height: 1.25;
-          font-size: 1.8rem;
-
-          &:focus {
-            outline: none;
-            border-color: #1192ee;
-          }
-          &[type="number"] {
-            width: 20%;
-            min-width: 100px;
-            margin-right: 1rem;
-            &::-webkit-inner-spin-button {
-              appearance: none;
-              -moz-appearance: none;
-              -webkit-appearance: none;
-            }
-          }
-        }
-        .current {
-          color: #333;
-        }
-
-        textarea {
-          width: 100%;
-          min-width: 100%;
-          max-width: 100%;
-          min-height: 50px;
-          max-height: 200px;
-          padding: 1rem 1.5rem;
-          border: 1px solid rgba(3, 3, 3, 0.1);
-          line-height: 1.25;
-          color: #333;
-          font-size: 1.8rem;
-          font-family: Arial, Helvetica, sans-serif;
-          appearance: none;
-          &:focus {
-            outline: none;
-            border-color: #1192ee;
-          }
-        }
-
-        &.radio {
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          flex-direction: row;
-
-          .input-radio {
-            margin: 1rem 2rem;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            input {
-              margin-right: .5rem;
-              &:checked {
-                border-color: #1192ee;
-                background-color: #1192ee;
-              }
-            }
-          }
-        }
-      }
-      .label-text {
-        margin-top: 2rem;
-        text-align: center;
-        font-size: 1.8rem;
-        color: #333;
-        font-family: Arial, Helvetica, sans-serif;
-      }
-    }
-
-    .error {
-      margin: 1rem;
-      background-color: rgba(254, 226, 226, 1);
-      padding: 1rem 2rem;
-      color: rgba(185, 28, 28, 1);
-    }
-  }
-
-  @media (max-width: 440px) {
-    form {
-      padding: 2rem;
-
-      .radio {
-        .input-radio {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          input {
-            margin-bottom: 1rem;
-          }
-        }
-      }
-    }
-  }
-`;
-
 const BtnContainer = styled.div`
   width: 100%;
   display: flex;
@@ -394,6 +342,8 @@ const BtnContainer = styled.div`
     border: none;
     border-radius: 5px;
     color: #fff;
+    cursor: pointer;
+    
     &.btn-save {
       background-color: var(--verde);
     }
