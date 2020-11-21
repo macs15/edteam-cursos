@@ -1,4 +1,4 @@
-import { OBTENER_CURSOS } from '../types';
+import { OBTENER_CURSOS, SELECCIONAR_CURSO } from '../types';
 
 const CursoReducer = (state, action) => {
     switch(action.type) {
@@ -6,6 +6,11 @@ const CursoReducer = (state, action) => {
             return {
                 ...state,
                 cursos: action.payload
+            }
+        case SELECCIONAR_CURSO:
+            return {
+                ...state,
+                cursoseleccionado: action.payload
             }
         default:
             return state;
