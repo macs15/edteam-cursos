@@ -5,6 +5,7 @@ import Cursos from './components/Cursos';
 import Formulario from "./components/Formulario";
 import Curso from "./components/Curso";
 import CursoState from './context/CursoState';
+import CustomRoute from "./components/Route/CurstomRoute";
 function App() {
   return (
     <CursoState>
@@ -14,7 +15,7 @@ function App() {
           <Route exact path="/cursos" component={Cursos} />
           <Route exact path="/cursos/nuevo-curso" component={Formulario} />
           <Route exact path="/cursos/:id" component={Curso} />
-          <Route exact path="/cursos/:id/editar" component={Formulario} />
+          <CustomRoute exact path="/cursos/:id/editar" component={Formulario} />
         </Switch>
       </Router>
     </CursoState>
