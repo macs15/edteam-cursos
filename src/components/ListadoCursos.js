@@ -4,17 +4,22 @@ import CursoPreview from './CursoPreview';
 import CursoContext from '../context/CursoContext';
 
 const Container = styled.main`
-    width: 100%;
-    height: 100%;
-    min-height: 100%;
 
     .course-container {
         max-width: 1200px;
-        width: 95%;
         margin: 0 auto;
         display: flex;
         justify-content: center;
+        flex-direction: row;
         flex-wrap: wrap;
+    }
+
+    @media (max-width: 640px) {
+        .course-container {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
     }
 `;
 

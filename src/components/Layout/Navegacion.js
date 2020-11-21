@@ -21,17 +21,20 @@ const NavBar = styled.nav`
 
   .links-container {
       display: flex;
+      align-items: center;
   }
 
   .logo {
       font-size: 2.5rem;
       color: #333;
       font-weight: 700;
+      display: inline-block;
+      padding-bottom: 1px;
   }
   .link {
     padding: 1rem 2rem;
-    border-radius: 5px;
     color: #5e5eff;
+    border-bottom: 1px solid transparent;
     a {
       color: #5e5eff;
     }
@@ -39,15 +42,37 @@ const NavBar = styled.nav`
       background-color: #5e5eff;
       color: #fff;
       margin-left: 3rem;
+      border-radius: 5px;
       a {
         color: #fff;
+      }
+    }
+
+    &.active {
+      border-color: var(--azul);
+    }
+  }
+
+  @media (max-width: 512px) {
+    padding: 1rem 1rem;
+
+    .logo {
+      font-size: 2rem;
+    }
+    .link {
+      padding: 1rem 1rem;
+      &.btn {
+        margin-left: 0;
+        background-color: transparent;
+        a {
+          color: var(--azul);
+        }
       }
     }
   }
 `;
 const Navegacion = () => {
   const location = useLocation();
-
   return (
     <NavBar>
       <div>
@@ -58,14 +83,19 @@ const Navegacion = () => {
       <div>
         
           <div className="links-container">
-            <li className="link">
+            <li className={`${location.pathname === '/' && 'active'}  link`}>
+            <a href="/">Inicio</a>
+            </li>
+
+            <li className={`${location.pathname === '/cursos' && 'active'}  link`}>
             <a href="/cursos">Cursos</a>
-          </li>
-          {location.pathname !== "/cursos/nuevo-curso" && (
-          <li className="link btn">
-            <a href="/cursos/nuevo-curso">Nuevo curso</a>
-          </li>
-          )}
+            </li>
+
+            {location.pathname !== "/cursos/nuevo-curso" && (
+            <li className="link btn">
+              <a href="/cursos/nuevo-curso">Nuevo curso</a>
+            </li>
+            )}
           </div>
       </div>
     </NavBar>

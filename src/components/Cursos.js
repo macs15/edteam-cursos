@@ -5,7 +5,6 @@ import ListadoCursos from './ListadoCursos';
 
 const Container = styled.div`
     width: 100%;
-    min-width: 100vh;
     height: 100%;
     padding: 0 2rem;
     background-color: #fbfbfe;

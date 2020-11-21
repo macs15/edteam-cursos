@@ -1,11 +1,16 @@
 import styled from '@emotion/styled';
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import axiosClient from '../config/axios';
 import CursoContext from '../context/CursoContext';
+import { ButtonsContainer } from './utils/styledComponents';
 
 const CardContainer = styled.li`
     list-style: none;
-    width: 20%;
+    width: 33%;
+    max-width: 250px;
+    min-width: 250px;
+    flex: 1;
     background-color: #fff;
     margin: 0 1rem 2rem 1rem;
     display: flex;
@@ -56,33 +61,23 @@ const CardContainer = styled.li`
         padding: 1rem;
         background-color: #e0e1e1;
     }
-`;
-const ButtonsContainer = styled.div`
-    display: flex;
-    justify-content: space-around;
-    padding: 1rem;
 
-    .btn-container {
-
-    }
-    .btn {
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 5px;
-        color: #fff;
-
-        &.btn-edit {
-            background-color: green;
-        }
-        &.btn-delete {
-            background-color: #ff4141;
-        }
+    @media (max-width: 640px) {
+        width: 90%;
+        max-width: none;
+        min-width: auto;
     }
 `;
+
 
 const CursoPreview = ({curso}) => {
     const { id, nombre, author, imagen, disponible, precio, descripcion } = curso;
-    const { obtenerCursos } = useContext(CursoContext);
+    const { obtenerCursos, seleccionarCurso } = useContext(CursoContext);
+
+    // router de react
+    const history = useHistory();
+
+    // elimina el curso seleccionado. PD: más práctico que ponerlo en context
     const eliminarCurso = async () => {
 
         const res = window.confirm('Realmente quieres borrar este curso?');
@@ -95,6 +90,13 @@ const CursoPreview = ({curso}) => {
                 window.alert('No se pudo eliminar este curso');
             }
         }
+    }
+
+    const handleClick = () => {
+        // curso actual
+        seleccionarCurso(curso);
+        // redirecciona al form
+        history.push(`/cursos/${id}/editar`)
     }
 
     return ( 
@@ -118,12 +120,12 @@ const CursoPreview = ({curso}) => {
                     <p>{author}</p>
                 </div>
                 <div>
-                    <p>{precio} USD</p>
+                    <p>$ {precio > 0 ? precio : 0} USD</p>
                 </div>
             </footer>
             <ButtonsContainer>
                 <div className="btn-container">
-                    <button className="btn btn-edit">Editar</button>
+                    <button onClick={() => handleClick()} className="btn btn-edit">Editar</button>
                 </div>
                 <div className="btn-container">
                     <button onClick={() => eliminarCurso()} className="btn btn-delete">Eliminar</button>
