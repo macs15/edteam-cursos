@@ -127,7 +127,7 @@ const Formulario = () => {
           }
         }
       } else {
-        
+
         if (existeCurso) {
           formik.setFieldError(
             "id",
@@ -210,6 +210,7 @@ const Formulario = () => {
                 className="input"
                 id="title"
                 name="nombre"
+                title="Nombre del curso"
                 placeholder="Nombre del curso"
                 type="text"
                 value={formik.values.nombre}
@@ -227,6 +228,7 @@ const Formulario = () => {
                 name="descripcion"
                 placeholder="Descripción"
                 type="number"
+                title="Descripción del curso"
                 value={formik.values.descripcion}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -243,6 +245,7 @@ const Formulario = () => {
                 id="author"
                 name="author"
                 placeholder="Autor del curso"
+                title="Autor del curso"
                 type="text"
                 value={formik.values.author}
                 onChange={formik.handleChange}
@@ -261,6 +264,7 @@ const Formulario = () => {
                 name="precio"
                 placeholder="Precio"
                 type="number"
+                title="Precio del producto en caso de ser de pago"
                 value={formik.values.precio}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -280,6 +284,7 @@ const Formulario = () => {
                 id="slug"
                 className="input"
                 name="id"
+                title="Slug del curso"
                 placeholder="Ej: python, scracth, google-play-app"
                 type="text"
                 value={formik.values.id}
@@ -300,6 +305,7 @@ const Formulario = () => {
                 id="imagen"
                 className="input"
                 name="imagen"
+                title="URL de la imagen para el curso"
                 placeholder="ej: http://example.com"
                 type="text"
                 value={formik.values.imagen}
@@ -318,6 +324,7 @@ const Formulario = () => {
                 <input
                   id="disponible"
                   name="disponible"
+                  title="Disponibilidad del curso"
                   type="radio"
                   value={true}
                   checked={disponible === true}
@@ -329,6 +336,7 @@ const Formulario = () => {
                 <input
                   id="proximamente"
                   name="disponible"
+                  title="Disponibilidad del curso"
                   type="radio"
                   value={false}
                   checked={disponible === false}

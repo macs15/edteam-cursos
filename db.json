@@ -20,13 +20,14 @@
       "poster": "http://localhost:3001/cursos/arduino"
     },
     {
-      "id": "app-google-play",
       "nombre": "Crea y sube tu primera app a Google Play",
-      "author": "Maximiliano Burgos",
       "descripcion": "Rick y Morty serán los protagonistas de tu propia app en Android Nativo que, además, podrás subir a Google Play.",
       "precio": 51,
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/63d63045-f4e4-4f49-8f67-5859e9d3048e.png",
+      "id": "app-google-play",
+      "author": "Maximiliano Burgos",
       "disponible": true,
-      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/63d63045-f4e4-4f49-8f67-5859e9d3048e.png"
+      "poster": "http://localhost:3000/cursos/app-google-play"
     },
     {
       "id": "web",
@@ -110,16 +111,6 @@
       "author": "Alexys Lozada",
       "disponible": false,
       "poster": "http://localhost:3001/cursos/go-ssr"
-    },
-    {
-      "nombre": "Motion Graphics para redes sociales",
-      "descripcion": "Elabora gráficos animados para resaltar tus publicaciones en redes sociales.",
-      "precio": 16,
-      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/a027fe1a-fcf4-4a1c-8717-c3d52d5f9879.jpg",
-      "id": "motiongraphics",
-      "author": "Paúl Alayo",
-      "disponible": true,
-      "poster": "http://localhost:3001/cursos/motiongraphics"
     }
   ]
 }
