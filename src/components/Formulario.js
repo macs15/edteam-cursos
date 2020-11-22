@@ -10,20 +10,18 @@ import { FormContainer } from "./utils/styledComponents";
 
 const Formulario = () => {
   const [initialValues, setInitialValues] = useState({
-    nombre: '',
-    descripcion: '',
+    nombre: "",
+    descripcion: "",
     precio: 0,
-    imagen: '',
-    id: '',
-    author: '',
+    imagen: "",
+    id: "",
+    author: "",
   });
   // radio separado porque perdía el booleano y lo cambiaba a string
   const [disponible, setDisponible] = useState(null);
   const [mensaje, setMensaje] = useState(null);
 
-  const { cursoseleccionado, actualizarCurso, comprobarCurso } = useContext(
-    CursoContext
-  );
+  const { cursoseleccionado, comprobarCurso } = useContext(CursoContext);
 
   const history = useHistory(); // router react
 
@@ -34,13 +32,13 @@ const Formulario = () => {
       setDisponible(cursoseleccionado.disponible);
     } else {
       setInitialValues({
-        nombre: '',
-        descripcion: '',
+        nombre: "",
+        descripcion: "",
         precio: 0,
-        imagen: '',
-        id: '',
-        author: '',
-        disponible: '',
+        imagen: "",
+        id: "",
+        author: "",
+        disponible: "",
       });
       setDisponible(null);
     }
@@ -60,7 +58,12 @@ const Formulario = () => {
       imagen: Yup.string()
         .required("Debes añadir un link de imagen para el curso")
         .url("Ingresa un url válido"),
-      id: Yup.string().required("El slug es obligatorio").matches('^[a-z-]+$', 'el slug solo puede contener letras y deben ser minúsculas'),
+      id: Yup.string()
+        .required("El slug es obligatorio")
+        .matches(
+          "^[a-z-]+$",
+          "el slug solo puede contener letras y deben ser minúsculas"
+        ),
       author: Yup.string().required("El autor del curso es necesario"),
     }),
 
@@ -97,27 +100,11 @@ const Formulario = () => {
       // comprobamos que no exista el id(slug);
       const existeCurso = await comprobarCurso(id);
 
-      try {
-        // comprueba si se usará post o put
-        if (cursoseleccionado) {
-          if (existeCurso) {
-            // para asegurarnos de que exista el slug antes de acceder a su attr id
-            if (existeCurso.id !== cursoseleccionado.id) {
-              formik.setFieldError(
-                "id",
-                "Slug existente, por favor intenta con uno distinto"
-              );
-              setMensaje(null);
-              return;
-            }
-            // axios put
-            actualizarCurso(id, curso);
-
-            window.alert("Curso actualizado correctamente!");
-            history.push(`/cursos/${id}`);
-          }
-        } else {
-          if (existeCurso) {
+      // comprueba si se usará post o put
+      if (cursoseleccionado) {
+        if (existeCurso) {
+          // para asegurarnos de que exista el slug antes de acceder a su attr id
+          if (existeCurso.id !== cursoseleccionado.id) {
             formik.setFieldError(
               "id",
               "Slug existente, por favor intenta con uno distinto"
@@ -125,24 +112,51 @@ const Formulario = () => {
             setMensaje(null);
             return;
           }
+
+          try {
+            // axios put
+            await axiosClient.put(`/cursos/${id}`, curso, { timeout: 5000});
+
+            window.alert("Curso actualizado correctamente!");
+            history.push(`/cursos/${id}`);
+          } catch (e) {
+            setMensaje({
+              data: "Hubo un error actualizando el curso",
+              tipo: "error",
+            });
+          }
+        }
+      } else {
+        
+        if (existeCurso) {
+          formik.setFieldError(
+            "id",
+            "Slug existente, por favor intenta con uno distinto"
+          );
+          setMensaje(null);
+          return;
+        }
+        try {
           const resultado = await axiosClient.post("/cursos", curso);
 
           if (resultado.status === 201) {
             window.alert("Curso creado correctamente!");
+            formik.resetForm();
+            history.push(`/cursos/${resultado.data.id}`);
+          } else {
+            setMensaje(null);
+            window.alert("Algo salió mal al actualizar este curso");
           }
-          formik.resetForm();
-
-          history.push(`/cursos/${resultado.data.id}`);
+        } catch (error) {
+          // feedback para el usuario
+          setMensaje({
+            data: "Ups, Algo salió mal en nuestro servidor",
+            tipo: "error",
+          });
+          setTimeout(() => {
+            setMensaje(null);
+          }, 3000);
         }
-      } catch (error) {
-        // feedback para el usuario
-        setMensaje({
-          data: "Ups, Algo salió mal en nuestro servidor",
-          tipo: "error",
-        });
-        setTimeout(() => {
-          setMensaje(null);
-        }, 3000);
       }
     },
   });
@@ -158,16 +172,16 @@ const Formulario = () => {
     // resetear valores
     formik.handleReset();
     setInitialValues({
-      nombre: '',
-      descripcion: '',
+      nombre: "",
+      descripcion: "",
       precio: 0,
-      imagen: '',
-      id: '',
-      author: '',
-      disponible: '',
+      imagen: "",
+      id: "",
+      author: "",
+      disponible: "",
     });
     setDisponible(null);
-  }
+  };
 
   return (
     <>
@@ -335,7 +349,11 @@ const Formulario = () => {
             <button type="submit" className="btn btn-save">
               Guardar
             </button>
-            <button className="btn btn-reset" type="button" onClick={() => handleFormReset()}>
+            <button
+              className="btn btn-reset"
+              type="button"
+              onClick={() => handleFormReset()}
+            >
               Reset
             </button>
           </BtnContainer>
