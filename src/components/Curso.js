@@ -2,99 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import axiosClient from "../config/axios";
 import Navegacion from "./Layout/Navegacion";
-import styled from "@emotion/styled";
-import { ButtonsContainer } from './utils/styledComponents';
+import { ButtonsContainer, Container, RedirContainer } from "./utils/styledComponents";
 import CursoContext from "../context/CursoContext";
-
-const Container = styled.main`
-  margin-top: 50px;
-
-  .loading-text {
-    margin: 1rem auto;
-    text-align: center;
-  }
-
-  .container {
-    min-height: 400px;
-    background-color: #eff3f5;
-    padding: 4rem;
-
-    div {
-      max-width: 1200px;
-      display: flex;
-      flex-wrap: nowrap;
-      flex-direction: row-reverse;
-      margin: 0 auto;
-
-      .img-container {
-        width: 50%;
-        background-size: cover;
-        img {
-          border-radius: 10px;
-          width: 100%;
-        }
-      }
-      .info-container {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        padding: 0 2rem;
-
-        .title {
-          padding: 2rem;
-        }
-        .description {
-          color: #697477;
-        }
-        .tag {
-          margin-top: 4rem;
-          display: inline-block;
-          padding: 1rem 2rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-right: auto;
-          margin-top: auto;
-
-          &.soon {
-            color: var(--azul);
-          }
-          &.aviable {
-            color: var(--verde);
-          }
-        }
-
-        .price {
-          color: var(--azul);
-          padding: 1rem 2rem;
-          
-          span {
-            padding: 0 1rem;
-          }
-        }
-
-        .free-course {
-          color: var(--azul);
-          padding: 1rem 2rem;
-        }
-      }
-    }
-  }
-`;
-
-const RedirContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  a {
-    background-color: var(--azul);
-    color: #fff;
-    padding: 1rem 2rem;
-    border-radius: 5px;
-    margin-top: 5rem;
-  }
-`;
 
 const Curso = () => {
   const [curso, setCurso] = useState(null);
@@ -131,28 +40,27 @@ const Curso = () => {
       </Container>
     );
 
-    // elimina el curso seleccionado. PD: más práctico que ponerlo en context
-    const eliminarCurso = async () => {
+  // elimina el curso seleccionado. PD: más práctico que ponerlo en context
+  const eliminarCurso = async () => {
+    const res = window.confirm("Realmente quieres borrar este curso?");
+    if (res) {
+      try {
+        await axiosClient.delete(`/cursos/${curso.id}`);
 
-      const res = window.confirm('Realmente quieres borrar este curso?');
-      if(res) {
-          try {
-              await axiosClient.delete(`/cursos/${curso.id}`);
-
-              window.alert('Curso eliminado');
-              history.push('/cursos');
-          } catch (e) {
-              window.alert('No se pudo eliminar este curso');
-          }
+        window.alert("Curso eliminado");
+        history.push("/cursos");
+      } catch (e) {
+        window.alert("No se pudo eliminar este curso");
       }
-  }
+    }
+  };
 
   const handleClick = () => {
-      // curso actual
-      seleccionarCurso(curso);
-      // redirecciona al form
-      history.push(`/cursos/${curso.id}/editar`)
-  }
+    // curso actual
+    seleccionarCurso(curso);
+    // redirecciona al form
+    history.push(`/cursos/${curso.id}/editar`);
+  };
 
   return (
     <Container>
@@ -167,19 +75,34 @@ const Curso = () => {
               <div className="info-container">
                 <h1 className="title">{curso.nombre}</h1>
                 <p className="description">{curso.descripcion}</p>
-                {curso.disponible ? (
-                  <span className="tag aviable">Disponible</span>
-                ) : (
-                  <span className="tag soon">Próximamente</span>
-                )}
-                {curso.precio > 0 ? (<p className="price">$ {curso.precio}<span>USD</span></p>) : <p className="free-course">Curso gratuito</p>}
+                <div className="tags-container">
+                  {curso.disponible ? (
+                    <span className="tag aviable">Disponible</span>
+                  ) : (
+                    <span className="tag soon">Próximamente</span>
+                  )}
+                  {curso.precio > 0 ? (
+                    <p className="price">
+                      $ {curso.precio}
+                      <span>USD</span>
+                    </p>
+                  ) : (
+                    <p className="free-course">Curso gratuito</p>
+                  )}
+                </div>
                 <ButtonsContainer>
-                  <div className="btn-container">
-                      <button onClick={() => eliminarCurso()} className="btn btn-delete">Eliminar</button>
-                  </div>
-                  <div className="btn-container">
-                      <button onClick={() => handleClick()} className="btn btn-edit">Editar</button>
-                  </div>
+                  <button
+                    onClick={() => handleClick()}
+                    className="btn btn-edit"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => eliminarCurso()}
+                    className="btn btn-delete"
+                  >
+                    Eliminar
+                  </button>
                 </ButtonsContainer>
               </div>
             </div>
