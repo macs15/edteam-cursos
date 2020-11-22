@@ -402,7 +402,7 @@ const BtnContainer = styled.div`
       background-color: var(--verde);
     }
     &.btn-reset {
-      background-color: var(--azul);
+      background-color: var(--rojo);
     }
   }
 `;
