@@ -19,6 +19,7 @@ const CursoPreview = ({curso}) => {
         if(res) {
             try {
                 await axiosClient.delete(`/cursos/${id}`);
+                // actualiza los cursos listados para quitar el eliminado
                 obtenerCursos();
                 window.alert('Curso eliminado');
             } catch (e) {
@@ -53,11 +54,11 @@ const CursoPreview = ({curso}) => {
                 {disponible ? <p className="aviable">Disponible</p> : <p className="soon">Próximamente</p>}
             </div>
             <footer className="footer">
-                <div>
-                    <p>{author}</p>
+                <div style={{overflow: "hidden", marginRight: '1rem'}}>
+                    <p title={author} style={{whiteSpace: 'nowrap'}}>{author}</p>
                 </div>
                 <div>
-                    <p>$ {precio > 0 ? precio : 0} USD</p>
+                    <p style={{whiteSpace: "nowrap"}}>$ {precio > 0 ? precio : 0} USD</p>
                 </div>
             </footer>
             <ButtonsContainer>
