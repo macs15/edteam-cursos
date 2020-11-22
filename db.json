@@ -29,13 +29,14 @@
       "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/63d63045-f4e4-4f49-8f67-5859e9d3048e.png"
     },
     {
-      "id": "web",
       "nombre": "La ruta del desarrollador web",
-      "author": "Alvaro Felipe",
       "descripcion": "Aprende todos los roles y rutas que existen para ser un desarrollador web profesional en 2021.",
       "precio": 0,
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/e7fbb7f9-773c-426a-bbb5-14276a37af33.png",
+      "id": "web",
+      "author": "Alvaro Felipe",
       "disponible": true,
-      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/e7fbb7f9-773c-426a-bbb5-14276a37af33.png"
+      "poster": "http://localhost:3000/cursos/web"
     },
     {
       "id": "unity",
@@ -113,14 +114,24 @@
       "poster": "http://localhost:3001/cursos/go-ssr"
     },
     {
-      "nombre": "Motion Graphics para redes sociales",
-      "descripcion": "Elabora gráficos animados para resaltar tus publicaciones en redes sociales.",
-      "precio": 16,
-      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/a027fe1a-fcf4-4a1c-8717-c3d52d5f9879.jpg",
-      "id": "motiongraphics",
-      "author": "Paúl Alayo",
+      "nombre": "Symfony desde cero",
+      "descripcion": "Aprende a crear aplicaciones web con uno de los Frameworks más potentes del mercado.",
+      "precio": 32,
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/8cb7bce7-eb7c-4925-af03-8e22f9c0e9a9.jpg",
+      "id": "symfony",
+      "author": "Diego Bastidas",
       "disponible": true,
-      "poster": "http://localhost:3001/cursos/motiongraphics"
+      "poster": "http://localhost:3000/cursos/symfony"
+    },
+    {
+      "nombre": "Introducción a API REST (gratis)",
+      "descripcion": "Aprende todos los conceptos teóricos que hay en la arquitectura REST.",
+      "precio": 0,
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/fbda9747-85b7-482e-8ffc-547b98031ca4.png",
+      "id": "api-rest",
+      "author": "Alexys Lozada",
+      "disponible": true,
+      "poster": "http://localhost:3000/cursos/api-rest"
     }
   ]
 }
