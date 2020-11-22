@@ -5,7 +5,7 @@ import Cursos from './components/Cursos';
 import Formulario from "./components/Formulario";
 import Curso from "./components/Curso";
 import CursoState from './context/CursoState';
-import CustomRoute from "./components/Route/CurstomRoute";
+import CustomRoute from "./components/Route/CustomRoute";
 function App() {
   return (
     <CursoState>
