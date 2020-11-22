@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import axiosClient from '../config/axios';
-import { ACTUALIZAR_CURSO, OBTENER_CURSOS, SELECCIONAR_CURSO } from '../types';
+import { OBTENER_CURSOS, SELECCIONAR_CURSO } from '../types';
 import CursoContext from './CursoContext';
 import CursoReducer from './CursoReducer';
 
@@ -35,21 +35,6 @@ const CursoState = props => {
         });
     }
 
-    // actualizar un curso por id
-    const actualizarCurso = async (id, curso) => {
-        try {
-            const resultado = await axiosClient.put(`/cursos/${id}`, curso);
-
-            dispatch({
-                type: ACTUALIZAR_CURSO,
-                payload: resultado.data
-                
-            });
-        } catch (error) {
-            window.alert('Algo salió mal al actualizar este curso');
-        }
-    }
-
     const comprobarCurso = async id => {
         try {
             const resultado = await axiosClient.get(`/cursos/${id}`);
@@ -68,7 +53,6 @@ const CursoState = props => {
                 existecurso: state.existecurso,
                 obtenerCursos,
                 seleccionarCurso,
-                actualizarCurso,
                 comprobarCurso
             }} 
         >
