@@ -6,22 +6,24 @@ import * as Yup from "yup";
 import axiosClient from "../config/axios";
 import CursoContext from "../context/CursoContext";
 import { useHistory } from "react-router-dom";
-import { FormContainer } from './utils/styledComponents';
+import { FormContainer } from "./utils/styledComponents";
 
 const Formulario = () => {
   const [initialValues, setInitialValues] = useState({
-    nombre: "",
-    descripcion: "",
+    nombre: '',
+    descripcion: '',
     precio: 0,
-    imagen: "",
-    id: "",
-    author: "",
+    imagen: '',
+    id: '',
+    author: '',
   });
   // radio separado porque perdía el booleano y lo cambiaba a string
   const [disponible, setDisponible] = useState(null);
   const [mensaje, setMensaje] = useState(null);
 
-  const { cursoseleccionado, actualizarCurso, comprobarCurso } = useContext(CursoContext);
+  const { cursoseleccionado, actualizarCurso, comprobarCurso } = useContext(
+    CursoContext
+  );
 
   const history = useHistory(); // router react
 
@@ -32,13 +34,13 @@ const Formulario = () => {
       setDisponible(cursoseleccionado.disponible);
     } else {
       setInitialValues({
-        nombre: "",
-        descripcion: "",
+        nombre: '',
+        descripcion: '',
         precio: 0,
-        imagen: "",
-        id: "",
-        author: "",
-        disponible: "",
+        imagen: '',
+        id: '',
+        author: '',
+        disponible: '',
       });
       setDisponible(null);
     }
@@ -58,7 +60,7 @@ const Formulario = () => {
       imagen: Yup.string()
         .required("Debes añadir un link de imagen para el curso")
         .url("Ingresa un url válido"),
-      id: Yup.string().required("El slug es obligatorio"),
+      id: Yup.string().required("El slug es obligatorio").matches('^[a-z-]+$', 'el slug solo puede contener letras y deben ser minúsculas'),
       author: Yup.string().required("El autor del curso es necesario"),
     }),
 
@@ -79,7 +81,8 @@ const Formulario = () => {
 
       const { nombre, descripcion, precio, imagen, id, author } = values;
       // genera el poster concatenando las variables
-      const poster = `${process.env.REACT_APP_BASE_URL}cursos/${id}`;
+      // const poster = `${process.env.REACT_APP_BASE_URL}cursos/${id}`;
+      const poster = `http://localhost:3000/cursos/${id}`;
       const curso = {
         nombre,
         descripcion,
@@ -89,16 +92,14 @@ const Formulario = () => {
         author,
         disponible,
         poster,
-      }
+      };
 
       // comprobamos que no exista el id(slug);
       const existeCurso = await comprobarCurso(id);
 
       try {
-
         // comprueba si se usará post o put
         if (cursoseleccionado) {
-
           if (existeCurso) {
             // para asegurarnos de que exista el slug antes de acceder a su attr id
             if (existeCurso.id !== cursoseleccionado.id) {
@@ -112,11 +113,10 @@ const Formulario = () => {
             // axios put
             actualizarCurso(id, curso);
 
-            window.alert('Curso actualizado correctamente!');
+            window.alert("Curso actualizado correctamente!");
             history.push(`/cursos/${id}`);
           }
         } else {
-
           if (existeCurso) {
             formik.setFieldError(
               "id",
@@ -131,11 +131,8 @@ const Formulario = () => {
             window.alert("Curso creado correctamente!");
           }
           formik.resetForm();
-          
+
           history.push(`/cursos/${resultado.data.id}`);
-          setTimeout(() => {
-            setMensaje(null);
-          }, 3000);
         }
       } catch (error) {
         // feedback para el usuario
@@ -157,12 +154,42 @@ const Formulario = () => {
     setDisponible(boolean);
   };
 
+  const handleFormReset = () => {
+    // resetear valores
+    formik.handleReset();
+    setInitialValues({
+      nombre: '',
+      descripcion: '',
+      precio: 0,
+      imagen: '',
+      id: '',
+      author: '',
+      disponible: '',
+    });
+    setDisponible(null);
+  }
+
   return (
     <>
       <Navegacion />
       <FormContainer>
         <form onSubmit={formik.handleSubmit}>
-          <h2 className="form-title">Datos del curso</h2>
+          <div className="title-container">
+            {!cursoseleccionado ? (
+              <>
+                <h2 className="form-title">Crea un nuevo curso</h2>
+                <p>
+                  Rellena los campos con la información necesaria para crear el
+                  curso
+                </p>
+              </>
+            ) : (
+              <>
+                <h2 className="form-title">Actualizar curso</h2>
+                <p>Rellena los campos con la información actualizada</p>
+              </>
+            )}
+          </div>
           <div className="inputs-container">
             <div className="input-container">
               <input
@@ -308,7 +335,7 @@ const Formulario = () => {
             <button type="submit" className="btn btn-save">
               Guardar
             </button>
-            <button className="btn btn-reset" onClick={formik.handleReset}>
+            <button className="btn btn-reset" type="button" onClick={() => handleFormReset()}>
               Reset
             </button>
           </BtnContainer>
@@ -343,7 +370,8 @@ const BtnContainer = styled.div`
     border-radius: 5px;
     color: #fff;
     cursor: pointer;
-    
+    min-width: 90px;
+
     &.btn-save {
       background-color: var(--verde);
     }
