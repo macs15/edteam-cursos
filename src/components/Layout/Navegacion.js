@@ -39,11 +39,14 @@ const NavBar = styled.nav`
       color: #5e5eff;
     }
     &.btn {
+      padding: 0;
       background-color: #5e5eff;
       color: #fff;
       margin-left: 3rem;
       border-radius: 5px;
       a {
+        padding: 1rem 2rem;
+        display: inline-block;
         color: #fff;
       }
     }
