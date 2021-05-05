@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import axiosClient from '../config/axios';
 import CursoContext from '../context/CursoContext';
 import { ButtonsContainer, CardContainer } from './utils/styledComponents';
@@ -7,10 +8,10 @@ import { ButtonsContainer, CardContainer } from './utils/styledComponents';
 
 const CursoPreview = ({curso}) => {
     const { id, nombre, author, imagen, disponible, precio, descripcion } = curso;
-    const { obtenerCursos, seleccionarCurso } = useContext(CursoContext);
+    // const { seleccionarCurso } = useContext(CursoContext);
 
     // router de react
-    const history = useHistory();
+    const router = useRouter();
 
     // elimina el curso seleccionado. PD: más práctico que ponerlo en context
     const eliminarCurso = async () => {
@@ -20,7 +21,7 @@ const CursoPreview = ({curso}) => {
             try {
                 await axiosClient.delete(`/cursos/${id}`);
                 // actualiza los cursos listados para quitar el eliminado
-                obtenerCursos();
+                // obtenerCursos();
                 window.alert('Curso eliminado');
             } catch (e) {
                 window.alert('No se pudo eliminar este curso');
@@ -30,17 +31,17 @@ const CursoPreview = ({curso}) => {
 
     const handleClick = () => {
         // curso actual
-        seleccionarCurso(curso);
+        // seleccionarCurso(curso);
         // redirecciona al form
-        history.push(`/cursos/${id}/editar`)
+        router.push(`/cursos/${id}/editar`)
     }
 
     return ( 
         <CardContainer>
             <div className="img-container">
-                <a href={`/cursos/${id}`}>
+                <Link href={`/cursos/${id}`}>
                     <img src={imagen} alt={nombre} />
-                </a>
+                </Link>
             </div>
             <div className="details-container">
                 <div className="title-container">

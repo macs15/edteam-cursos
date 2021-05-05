@@ -10,6 +10,8 @@
     "@testing-library/user-event": "^12.2.2",
     "axios": "^0.21.0",
     "formik": "^2.2.5",
+    "next": "^10.2.0",
+    "postcss": "^8.2.13",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
@@ -18,9 +20,10 @@
     "yup": "^0.30.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "next start",
+    "dev": "next dev",
+    "build": "next build",
+    "test": "next test",
     "eject": "react-scripts eject",
     "server": "json-server --watch db.json --port 3001"
   },

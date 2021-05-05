@@ -1,6 +1,6 @@
-import React from "react";
+import { useRouter } from 'next/router'
 import styled from "@emotion/styled";
-import { useLocation } from "react-router-dom";
+import Link from 'next/link'
 
 const NavBar = styled.nav`
   position: fixed;
@@ -75,7 +75,7 @@ const NavBar = styled.nav`
   }
 `;
 const Navegacion = () => {
-  const location = useLocation();
+  const { pathname } = useRouter();
   return (
     <NavBar>
       <div>
@@ -86,17 +86,17 @@ const Navegacion = () => {
       <div>
         
           <div className="links-container">
-            <li className={`${location.pathname === '/' && 'active'}  link`}>
-            <a href="/">Inicio</a>
+            <li className={`${pathname === '/' && 'active'}  link`}>
+            <Link href="/">Inicio</Link>
             </li>
 
-            <li className={`${location.pathname === '/cursos' && 'active'}  link`}>
-            <a href="/cursos">Cursos</a>
+            <li className={`${pathname === '/cursos' && 'active'}  link`}>
+            <Link href="/cursos">Cursos</Link>
             </li>
 
-            {location.pathname !== "/cursos/nuevo-curso" && (
+            {pathname !== "/cursos/nuevo-curso" && (
             <li className="link btn">
-              <a href="/cursos/nuevo-curso">Nuevo curso</a>
+              <Link href="/cursos/nuevo-curso">Nuevo curso</Link>
             </li>
             )}
           </div>

@@ -1,6 +1,5 @@
-import React from "react";
-import Navegacion from "./Layout/Navegacion";
-import { HomeContainer } from './utils/styledComponents';
+import Navegacion from "../src/components/Layout/Navegacion";
+import { HomeContainer } from '../src/components/utils/styledComponents';
 
 const Inicio = () => {
   return (

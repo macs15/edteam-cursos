@@ -1,49 +1,46 @@
-import React, { useContext, useEffect } from 'react';
-import styled from '@emotion/styled';
-import CursoPreview from './CursoPreview';
-import CursoContext from '../context/CursoContext';
+import React, { useContext, useEffect } from "react";
+import styled from "@emotion/styled";
+import CursoPreview from "./CursoPreview";
+import CursoContext from "../context/CursoContext";
+import axiosClient from "../config/axios";
 
 const Container = styled.main`
+  .course-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 
+  @media (max-width: 640px) {
     .course-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: center;
-        flex-direction: row;
-        flex-wrap: wrap;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
-
-    @media (max-width: 640px) {
-        .course-container {
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-    }
+  }
 `;
 
-const ListadoCursos = () => {
+const ListadoCursos = ({ cursos }) => {
+  // const { cursos, obtenerCursos } = useContext(CursoContext);
 
-    const { cursos, obtenerCursos } = useContext(CursoContext);
+  // useEffect(() => {
+  //   // eslint-disable-next-line
+  // }, []);
 
-    useEffect(() => {
-        obtenerCursos();
-        // eslint-disable-next-line
-    }, []);
+  return (
+    <Container>
+      <ul className="course-container">
+        {cursos?.length > 0 ? (
+          cursos.map((curso) => <CursoPreview key={curso.id} curso={curso} />)
+        ) : (
+          <div> No hay cursos para mostrar</div>
+        )}
+      </ul>
+    </Container>
+  );
+};
 
-    return ( 
-        <Container>
-            <ul className="course-container">
-                { cursos.length > 0 ? 
-                cursos.map( curso => (
-                    <CursoPreview key={curso.id} curso={curso} />
-                )) : (
-                    <div> No hay cursos para mostrar</div>
-                )}
-            </ul>
-        </Container>
-    );
-}
- 
 export default ListadoCursos;

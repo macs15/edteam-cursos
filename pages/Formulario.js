@@ -1,12 +1,12 @@
 import styled from "@emotion/styled";
-import React, { useContext, useEffect, useState } from "react";
-import Navegacion from "./Layout/Navegacion";
+import { useHistory } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import Navegacion from "../src/components/Layout/Navegacion";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axiosClient from "../config/axios";
-import CursoContext from "../context/CursoContext";
-import { useHistory } from "react-router-dom";
-import { FormContainer } from "./utils/styledComponents";
+import axiosClient from "../src/config/axios";
+import CursoContext from "../src/context/CursoContext";
+import { FormContainer } from "../src/components/utils/styledComponents";
 
 const Formulario = () => {
   const [initialValues, setInitialValues] = useState({

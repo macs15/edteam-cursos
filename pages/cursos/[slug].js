@@ -1,27 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
-import axiosClient from "../config/axios";
-import Navegacion from "../components/Layout/Navegacion";
-import { ButtonsContainer, Container, RedirContainer } from "./utils/styledComponents";
-import CursoContext from "../context/CursoContext";
+import axiosClient from "../../src/config/axios";
+import Navegacion from "../../src/components/Layout/Navegacion";
+import {
+  ButtonsContainer,
+  Container,
+  RedirContainer,
+} from "../../src/components/utils/styledComponents";
+import CursoContext from "../../src/context/CursoContext";
+import { useRouter } from "next/router";
 
 const Curso = () => {
   const [curso, setCurso] = useState(null);
   const [cargando, setCargando] = useState(true);
-  const location = useLocation(); // obtiene ubicacion actual para el get con axios
-
-  const { seleccionarCurso } = useContext(CursoContext);
-  const history = useHistory(); // router react
-
-  useEffect(() => {
-    obtenerCurso();
-
-    //eslint-disable-next-line
-  }, []);
+  const router = useRouter(); 
 
   const obtenerCurso = async () => {
     try {
-      const resultado = await axiosClient.get(`${location.pathname}`);
+      const resultado = await axiosClient.get(`cursos/${router.query.slug}`);
 
       setCurso(resultado.data); // obtiene y guarda el curso actual
       setCargando(false); // oculta 'cargando'
@@ -29,7 +24,13 @@ const Curso = () => {
       // console.log(error);
       setCargando(false);
     }
-  };
+  }
+
+  useEffect(() => {
+    if (!router.query.slug) return
+    obtenerCurso()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router])
 
   // retorna mensaje cargando mientras hace la consulta
   if (cargando)
@@ -48,7 +49,7 @@ const Curso = () => {
         await axiosClient.delete(`/cursos/${curso.id}`);
 
         window.alert("Curso eliminado");
-        history.push("/cursos");
+        router.push("/cursos");
       } catch (e) {
         window.alert("No se pudo eliminar este curso");
       }
@@ -59,7 +60,7 @@ const Curso = () => {
     // curso actual
     seleccionarCurso(curso);
     // redirecciona al form
-    history.push(`/cursos/${curso.id}/editar`);
+    router.push(`/cursos/${curso.id}/editar`);
   };
 
   return (
