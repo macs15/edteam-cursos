@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import axiosClient from '../config/axios';
-import { OBTENER_CURSOS, SELECCIONAR_CURSO } from '../types';
+import { OBTENER_CURSOS } from '../types';
 import CursoContext from './CursoContext';
 import CursoReducer from './CursoReducer';
 
@@ -27,14 +27,6 @@ const CursoState = props => {
         }
     }
 
-    // curso actual a editar
-    const seleccionarCurso = curso => {
-        dispatch({
-            type: SELECCIONAR_CURSO,
-            payload: curso
-        });
-    }
-
     const comprobarCurso = async id => {
         try {
             const resultado = await axiosClient.get(`/cursos/${id}`);
@@ -52,7 +44,6 @@ const CursoState = props => {
                 cursoseleccionado: state.cursoseleccionado,
                 existecurso: state.existecurso,
                 obtenerCursos,
-                seleccionarCurso,
                 comprobarCurso
             }} 
         >

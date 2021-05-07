@@ -1,48 +1,54 @@
-import styled from "@emotion/styled";
-import { useHistory } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import Navegacion from "../src/components/Layout/Navegacion";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import axiosClient from "../src/config/axios";
-import CursoContext from "../src/context/CursoContext";
-import { FormContainer } from "../src/components/utils/styledComponents";
+import styled from '@emotion/styled'
+import { useContext, useEffect, useState } from 'react'
+import Navegacion from '../../src/components/Layout/Navegacion'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import axiosClient from '../../src/config/axios'
+import CursoContext from '../../src/context/CursoContext'
+import { FormContainer } from '../../src/components/utils/styledComponents'
+import { useRouter } from 'next/router'
+
+const initialState = {
+  nombre: '',
+  descripcion: '',
+  precio: 0,
+  imagen: '',
+  id: '',
+  author: '',
+  disponible: ''
+}
 
 const Formulario = () => {
-  const [initialValues, setInitialValues] = useState({
-    nombre: "",
-    descripcion: "",
-    precio: 0,
-    imagen: "",
-    id: "",
-    author: "",
-  });
+  const [initialValues, setInitialValues] = useState(initialState)
   // radio separado porque perdía el booleano y lo cambiaba a string
-  const [disponible, setDisponible] = useState(null);
-  const [mensaje, setMensaje] = useState(null);
+  const [disponible, setDisponible] = useState(null)
+  const [mensaje, setMensaje] = useState(null)
+  const { comprobarCurso } = useContext(CursoContext)
+  const router = useRouter() // router react
+  const cursoSlug = router.query.slug
+  const isEdit = router.pathname.includes('editar')
 
-  const { cursoseleccionado, comprobarCurso } = useContext(CursoContext);
-
-  const history = useHistory(); // router react
+  const getSelectedCourse = async () => {
+    try {
+      const response = await axiosClient.get(`/cursos/${cursoSlug}`)
+      if (response.status !== 200) return
+      setInitialValues(response.data)
+      setDisponible(response.data?.disponible)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
-    if (cursoseleccionado !== null) {
+    if (isEdit && cursoSlug) {
       // cargamos los valores del curso editando
-      setInitialValues(cursoseleccionado);
-      setDisponible(cursoseleccionado.disponible);
+      getSelectedCourse()
     } else {
-      setInitialValues({
-        nombre: "",
-        descripcion: "",
-        precio: 0,
-        imagen: "",
-        id: "",
-        author: "",
-        disponible: "",
-      });
-      setDisponible(null);
+      setInitialValues(initialState)
+      setDisponible(null)
     }
-  }, [cursoseleccionado]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEdit, cursoSlug])
 
   const formik = useFormik({
     // recarga el form cuando cambian sus valores iniciales
@@ -50,42 +56,42 @@ const Formulario = () => {
     // valores cargados desde el state
     initialValues,
     validationSchema: Yup.object({
-      nombre: Yup.string().required("El nombre no puede ir vacío"),
+      nombre: Yup.string().required('El nombre no puede ir vacío'),
       descripcion: Yup.string()
-        .required("Una descripción es requerida")
-        .max(180, "La descripción es muy larga (180 caracteres máximo)"),
+        .required('Una descripción es requerida')
+        .max(180, 'La descripción es muy larga (180 caracteres máximo)'),
       precio: Yup.number(),
       imagen: Yup.string()
-        .required("Debes añadir un link de imagen para el curso")
-        .url("Ingresa un url válido"),
+        .required('Debes añadir un link de imagen para el curso')
+        .url('Ingresa un url válido'),
       id: Yup.string()
-        .required("El slug es obligatorio")
+        .required('El slug es obligatorio')
         .matches(
-          "^[a-z-]+$",
-          "el slug solo puede contener letras y deben ser minúsculas"
+          '^[a-z-]+$',
+          'el slug solo puede contener letras y deben ser minúsculas'
         ),
-      author: Yup.string().required("El autor del curso es necesario"),
+      author: Yup.string().required('El autor del curso es necesario')
     }),
 
     onSubmit: async (values) => {
-      setMensaje({ data: "cargando...", tipo: "info" });
+      setMensaje({ data: 'cargando...', tipo: 'info' })
 
       if (disponible === null) {
         setMensaje({
-          data: "Debes especificar si está disponible este curso",
-          tipo: "error",
-        });
+          data: 'Debes especificar si está disponible este curso',
+          tipo: 'error'
+        })
         // limpiamos la pantalla
         setTimeout(() => {
-          setMensaje(null);
-        }, 3000);
-        return;
+          setMensaje(null)
+        }, 3000)
+        return
       }
 
-      const { nombre, descripcion, precio, imagen, id, author } = values;
+      const { nombre, descripcion, precio, imagen, id, author } = values
       // genera el poster concatenando las variables
       // const poster = `${process.env.REACT_APP_BASE_URL}cursos/${id}`;
-      const poster = `http://localhost:3000/cursos/${id}`;
+      const poster = `http://localhost:3000/cursos/${id}`
       const curso = {
         nombre,
         descripcion,
@@ -94,94 +100,93 @@ const Formulario = () => {
         id: id.trim().toLowerCase(),
         author,
         disponible,
-        poster,
-      };
+        poster
+      }
 
       // comprobamos que no exista el id(slug);
-      const existeCurso = await comprobarCurso(id);
+      const existeCurso = await comprobarCurso(id)
 
       // comprueba si se usará post o put
-      if (cursoseleccionado) {
+      if (isEdit) {
         if (existeCurso) {
           // para asegurarnos de que exista el slug antes de acceder a su attr id
-          if (existeCurso.id !== cursoseleccionado.id) {
+          if (existeCurso.id !== router.query.slug) {
             formik.setFieldError(
-              "id",
-              "Slug existente, por favor intenta con uno distinto"
-            );
-            setMensaje(null);
-            return;
+              'id',
+              'Slug existente, por favor intenta con uno distinto'
+            )
+            setMensaje(null)
+            return
           }
 
           try {
             // axios put
-            await axiosClient.put(`/cursos/${id}`, curso, { timeout: 5000});
+            await axiosClient.put(`/cursos/${id}`, curso, { timeout: 5000 })
 
-            window.alert("Curso actualizado correctamente!");
-            history.push(`/cursos/${id}`);
+            window.alert('Curso actualizado correctamente!')
+            router.push(`/cursos/${id}`)
           } catch (e) {
             setMensaje({
-              data: "Hubo un error actualizando el curso",
-              tipo: "error",
-            });
+              data: 'Hubo un error actualizando el curso',
+              tipo: 'error'
+            })
           }
         }
       } else {
-
         if (existeCurso) {
           formik.setFieldError(
-            "id",
-            "Slug existente, por favor intenta con uno distinto"
-          );
-          setMensaje(null);
-          return;
+            'id',
+            'Slug existente, por favor intenta con uno distinto'
+          )
+          setMensaje(null)
+          return
         }
         try {
-          const resultado = await axiosClient.post("/cursos", curso);
+          const resultado = await axiosClient.post('/cursos', curso)
 
           if (resultado.status === 201) {
-            window.alert("Curso creado correctamente!");
-            formik.resetForm();
-            history.push(`/cursos/${resultado.data.id}`);
+            window.alert('Curso creado correctamente!')
+            formik.resetForm()
+            router.push(`/cursos/${resultado.data.id}`)
           } else {
-            setMensaje(null);
-            window.alert("Algo salió mal al actualizar este curso");
+            setMensaje(null)
+            window.alert('Algo salió mal al actualizar este curso')
           }
         } catch (error) {
           // feedback para el usuario
           setMensaje({
-            data: "Ups, Algo salió mal en nuestro servidor",
-            tipo: "error",
-          });
+            data: 'Ups, Algo salió mal en nuestro servidor',
+            tipo: 'error'
+          })
           setTimeout(() => {
-            setMensaje(null);
-          }, 3000);
+            setMensaje(null)
+          }, 3000)
         }
       }
-    },
-  });
+    }
+  })
 
   const handleClickRadio = (value) => {
     // convierte el valor a boolean
-    let boolean = value === "true";
+    let boolean = value === 'true'
 
-    setDisponible(boolean);
-  };
+    setDisponible(boolean)
+  }
 
   const handleFormReset = () => {
     // resetear valores
-    formik.handleReset();
+    formik.handleReset()
     setInitialValues({
-      nombre: "",
-      descripcion: "",
+      nombre: '',
+      descripcion: '',
       precio: 0,
-      imagen: "",
-      id: "",
-      author: "",
-      disponible: "",
-    });
-    setDisponible(null);
-  };
+      imagen: '',
+      id: '',
+      author: '',
+      disponible: ''
+    })
+    setDisponible(null)
+  }
 
   return (
     <>
@@ -189,7 +194,7 @@ const Formulario = () => {
       <FormContainer>
         <form onSubmit={formik.handleSubmit}>
           <div className="title-container">
-            {!cursoseleccionado ? (
+            {!isEdit ? (
               <>
                 <h2 className="form-title">Crea un nuevo curso</h2>
                 <p>
@@ -371,18 +376,18 @@ const Formulario = () => {
         </form>
       </FormContainer>
     </>
-  );
-};
+  )
+}
 
-export default Formulario;
+export default Formulario
 
 const Error = ({ error, tipo }) => {
   return (
     <div className={tipo}>
       <p>{error}</p>
     </div>
-  );
-};
+  )
+}
 
 const BtnContainer = styled.div`
   width: 100%;
@@ -405,4 +410,4 @@ const BtnContainer = styled.div`
       background-color: var(--rojo);
     }
   }
-`;
+`

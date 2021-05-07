@@ -94,10 +94,10 @@ const Navegacion = () => {
             <Link href="/cursos">Cursos</Link>
             </li>
 
-            {pathname !== "/cursos/nuevo-curso" && (
-            <li className="link btn">
-              <Link href="/cursos/nuevo-curso">Nuevo curso</Link>
-            </li>
+            {pathname !== "/cursos/crear" && (
+              <li className="link btn">
+                <Link href="/cursos/crear">Nuevo curso</Link>
+              </li>
             )}
           </div>
       </div>

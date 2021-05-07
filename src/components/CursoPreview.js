@@ -1,14 +1,11 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
 import axiosClient from '../config/axios';
-import CursoContext from '../context/CursoContext';
 import { ButtonsContainer, CardContainer } from './utils/styledComponents';
 
 
 const CursoPreview = ({curso}) => {
     const { id, nombre, author, imagen, disponible, precio, descripcion } = curso;
-    // const { seleccionarCurso } = useContext(CursoContext);
 
     // router de react
     const router = useRouter();
@@ -30,10 +27,8 @@ const CursoPreview = ({curso}) => {
     }
 
     const handleClick = () => {
-        // curso actual
-        // seleccionarCurso(curso);
         // redirecciona al form
-        router.push(`/cursos/${id}/editar`)
+        router.push(`/cursos/editar/${id}`)
     }
 
     return ( 

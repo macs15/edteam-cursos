@@ -1,35 +1,34 @@
-import React, { useContext, useEffect, useState } from "react";
-import axiosClient from "../../src/config/axios";
-import Navegacion from "../../src/components/Layout/Navegacion";
+import React, { useEffect, useState } from 'react'
+import axiosClient from '../../src/config/axios'
+import Navegacion from '../../src/components/Layout/Navegacion'
 import {
   ButtonsContainer,
   Container,
-  RedirContainer,
-} from "../../src/components/utils/styledComponents";
-import CursoContext from "../../src/context/CursoContext";
-import { useRouter } from "next/router";
+  RedirContainer
+} from '../../src/components/utils/styledComponents'
+import { useRouter } from 'next/router'
 
 const Curso = () => {
-  const [curso, setCurso] = useState(null);
-  const [cargando, setCargando] = useState(true);
-  const router = useRouter(); 
+  const [curso, setCurso] = useState(null)
+  const [cargando, setCargando] = useState(true)
+  const router = useRouter()
 
   const obtenerCurso = async () => {
     try {
-      const resultado = await axiosClient.get(`cursos/${router.query.slug}`);
+      const resultado = await axiosClient.get(`cursos/${router.query.slug}`)
 
-      setCurso(resultado.data); // obtiene y guarda el curso actual
-      setCargando(false); // oculta 'cargando'
+      setCurso(resultado.data) // obtiene y guarda el curso actual
+      setCargando(false) // oculta 'cargando'
     } catch (error) {
-      // console.log(error);
-      setCargando(false);
+      // console.log(error)
+      setCargando(false)
     }
   }
 
   useEffect(() => {
     if (!router.query.slug) return
     obtenerCurso()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
   // retorna mensaje cargando mientras hace la consulta
@@ -39,29 +38,27 @@ const Curso = () => {
         <Navegacion />
         <p className="loading-text">Cargando...</p>
       </Container>
-    );
+    )
 
   // elimina el curso seleccionado. PD: más práctico que ponerlo en context
   const eliminarCurso = async () => {
-    const res = window.confirm("Realmente quieres borrar este curso?");
+    const res = window.confirm('Realmente quieres borrar este curso?')
     if (res) {
       try {
-        await axiosClient.delete(`/cursos/${curso.id}`);
+        await axiosClient.delete(`/cursos/${curso.id}`)
 
-        window.alert("Curso eliminado");
-        router.push("/cursos");
+        window.alert('Curso eliminado')
+        router.push('/cursos')
       } catch (e) {
-        window.alert("No se pudo eliminar este curso");
+        window.alert('No se pudo eliminar este curso')
       }
     }
-  };
+  }
 
   const handleClick = () => {
-    // curso actual
-    seleccionarCurso(curso);
     // redirecciona al form
-    router.push(`/cursos/${curso.id}/editar`);
-  };
+    router.push(`/cursos/editar/${curso.id}`)
+  }
 
   return (
     <Container>
@@ -119,7 +116,7 @@ const Curso = () => {
         </RedirContainer>
       )}
     </Container>
-  );
-};
+  )
+}
 
-export default Curso;
+export default Curso

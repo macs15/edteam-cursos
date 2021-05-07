@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import axiosClient from "../config/axios";
 import Navegacion from "../components/Layout/Navegacion";
 import { ButtonsContainer, Container, RedirContainer } from "./utils/styledComponents";
-import CursoContext from "../context/CursoContext";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Curso = () => {
   const [curso, setCurso] = useState(null);
   const [cargando, setCargando] = useState(true);
   const location = useLocation(); // obtiene ubicacion actual para el get con axios
-
-  const { seleccionarCurso } = useContext(CursoContext);
-  const history = useHistory(); // router react
+  const router = useRouter(); // router react
 
   useEffect(() => {
     obtenerCurso();
@@ -31,7 +30,6 @@ const Curso = () => {
     }
   };
 
-  // retorna mensaje cargando mientras hace la consulta
   if (cargando)
     return (
       <Container>
@@ -48,19 +46,12 @@ const Curso = () => {
         await axiosClient.delete(`/cursos/${curso.id}`);
 
         window.alert("Curso eliminado");
-        history.push("/cursos");
+        router.push("/cursos");
       } catch (e) {
         window.alert("No se pudo eliminar este curso");
       }
     }
-  };
-
-  const handleClick = () => {
-    // curso actual
-    seleccionarCurso(curso);
-    // redirecciona al form
-    history.push(`/cursos/${curso.id}/editar`);
-  };
+  }
 
   return (
     <Container>
@@ -91,12 +82,11 @@ const Curso = () => {
                   )}
                 </div>
                 <ButtonsContainer>
-                  <button
-                    onClick={() => handleClick()}
-                    className="btn btn-edit"
-                  >
-                    Editar
-                  </button>
+                  <Link href={`/cursos/editar/${curso.id}`}>
+                    <button className="btn btn-edit">
+                      Editar
+                    </button>
+                  </Link>
                   <button
                     onClick={() => eliminarCurso()}
                     className="btn btn-delete"
@@ -108,13 +98,13 @@ const Curso = () => {
             </div>
           </div>
           <RedirContainer>
-            <a href="/cursos">Volver a los cursos</a>
+            <Link href="/cursos">Volver a los cursos</Link>
           </RedirContainer>
         </>
       ) : (
         <RedirContainer>
           <h2> Parece que no encontramos lo que estás buscando...</h2>
-          <a href="/cursos">Volver a los cursos</a>
+          <Link href="/cursos">Volver a los cursos</Link>
         </RedirContainer>
       )}
     </Container>

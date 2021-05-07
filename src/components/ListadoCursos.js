@@ -1,8 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import styled from "@emotion/styled";
 import CursoPreview from "./CursoPreview";
 import CursoContext from "../context/CursoContext";
-import axiosClient from "../config/axios";
 
 const Container = styled.main`
   .course-container {
@@ -25,10 +24,7 @@ const Container = styled.main`
 
 const ListadoCursos = ({ cursos }) => {
   // const { cursos, obtenerCursos } = useContext(CursoContext);
-
-  // useEffect(() => {
-  //   // eslint-disable-next-line
-  // }, []);
+  const {  obtenerCursos } = useContext(CursoContext);
 
   return (
     <Container>

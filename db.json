@@ -1,13 +1,14 @@
 {
   "cursos": [
     {
-      "id": "python",
       "nombre": "Python desde cero",
-      "author": "Pablo España",
       "descripcion": "Aprende los fundamentos de uno de los lenguajes más importantes de la actualidad y crea un administrador de contraseñas.",
       "precio": 23,
+      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/85d3d7e4-19db-4cff-a4cb-cbead813b6b5.png",
+      "id": "python",
+      "author": "Pablo España",
       "disponible": false,
-      "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/85d3d7e4-19db-4cff-a4cb-cbead813b6b5.png"
+      "poster": "http://localhost:3000/cursos/python"
     },
     {
       "nombre": "Arduino desde cero",

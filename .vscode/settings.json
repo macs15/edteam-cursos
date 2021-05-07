@@ -1,0 +1,6 @@
+{
+    "cSpell.diagnosticLevel": "Hint",
+    "prettier.semi": false,
+    "prettier.singleQuote": true,
+    "prettier.trailingComma": "none"
+}
