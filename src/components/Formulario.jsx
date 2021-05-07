@@ -108,29 +108,28 @@ const Formulario = () => {
 
       // comprueba si se usará post o put
       if (isEdit) {
-        if (existeCurso) {
-          // para asegurarnos de que exista el slug antes de acceder a su attr id
-          if (existeCurso.id !== router.query.slug) {
-            formik.setFieldError(
-              'id',
-              'Slug existente, por favor intenta con uno distinto'
-            )
-            setMensaje(null)
-            return
-          }
+        // para asegurarnos de que exista el slug antes de acceder a su attr id
+        if (existeCurso && existeCurso?.id !== cursoSlug) {
+          formik.setFieldError(
+            'id',
+            'Slug existente, por favor intenta con uno distinto'
+          )
+          setMensaje(null)
 
-          try {
-            // axios put
-            await axiosClient.put(`/cursos/${id}`, curso, { timeout: 5000 })
+          return
+        }
 
-            window.alert('Curso actualizado correctamente!')
-            router.push(`/cursos/${id}`)
-          } catch (e) {
-            setMensaje({
-              data: 'Hubo un error actualizando el curso',
-              tipo: 'error'
-            })
-          }
+        try {
+          // axios put
+          await axiosClient.put(`/cursos/${cursoSlug}`, curso, { timeout: 5000 })
+
+          window.alert('Curso actualizado correctamente!')
+          router.push(`/cursos/${id}`)
+        } catch (e) {
+          setMensaje({
+            data: 'Hubo un error actualizando el curso',
+            tipo: 'error'
+          })
         }
       } else {
         if (existeCurso) {

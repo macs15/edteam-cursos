@@ -17,8 +17,8 @@
       "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/1bada4e8-4bab-4be8-8f2e-83e285515187.png",
       "id": "arduino",
       "author": "Andres Nino",
-      "disponible": false,
-      "poster": "http://localhost:3001/cursos/arduino"
+      "disponible": true,
+      "poster": "http://localhost:3000/cursos/arduino"
     },
     {
       "nombre": "Crea y sube tu primera app a Google Play",
@@ -100,8 +100,8 @@
       "imagen": "https://edteam-media.s3.amazonaws.com/courses/medium/6cbc514c-1e04-4bf4-8beb-fa595f363d9d.png",
       "id": "spring",
       "author": "Lucas Moyano",
-      "disponible": false,
-      "poster": "http://localhost:3001/cursos/spring"
+      "disponible": true,
+      "poster": "http://localhost:3000/cursos/springl"
     },
     {
       "nombre": "Server side render con Go",
