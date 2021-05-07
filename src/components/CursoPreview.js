@@ -1,37 +1,35 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import axiosClient from '../config/axios';
-import { ButtonsContainer, CardContainer } from './utils/styledComponents';
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import axiosClient from '../config/axios'
+import { ButtonsContainer, CardContainer } from './utils/styledComponents'
 
+const CursoPreview = ({ curso }) => {
+  const { id, nombre, author, imagen, disponible, precio, descripcion } = curso
 
-const CursoPreview = ({curso}) => {
-    const { id, nombre, author, imagen, disponible, precio, descripcion } = curso;
+  // router de react
+  const router = useRouter()
 
-    // router de react
-    const router = useRouter();
-
-    // elimina el curso seleccionado. PD: más práctico que ponerlo en context
-    const eliminarCurso = async () => {
-
-        const res = window.confirm('Realmente quieres borrar este curso?');
-        if(res) {
-            try {
-                await axiosClient.delete(`/cursos/${id}`);
-                // actualiza los cursos listados para quitar el eliminado
-                // obtenerCursos();
-                window.alert('Curso eliminado');
-            } catch (e) {
-                window.alert('No se pudo eliminar este curso');
-            }
-        }
+  // elimina el curso seleccionado. PD: más práctico que ponerlo en context
+  const eliminarCurso = async () => {
+    const res = window.confirm('Realmente quieres borrar este curso?')
+    if (res) {
+      try {
+        await axiosClient.delete(`/cursos/${id}`)
+        // actualiza los cursos listados para quitar el eliminado
+        // obtenerCursos();
+        window.alert('Curso eliminado')
+      } catch (e) {
+        window.alert('No se pudo eliminar este curso')
+      }
     }
+  }
 
-    const handleClick = () => {
-        // redirecciona al form
-        router.push(`/cursos/editar/${id}`)
-    }
+  const handleClick = () => {
+    // redirecciona al form
+    router.push(`/cursos/editar/${id}`)
+  }
 
-    return ( 
+  return (
         <CardContainer>
             <div className="img-container">
                 <Link href={`/cursos/${id}`}>
@@ -50,11 +48,11 @@ const CursoPreview = ({curso}) => {
                 {disponible ? <p className="aviable">Disponible</p> : <p className="soon">Próximamente</p>}
             </div>
             <footer className="footer">
-                <div style={{overflow: "hidden", marginRight: '1rem'}}>
-                    <p title={author} style={{whiteSpace: 'nowrap'}}>{author}</p>
+                <div style={{ overflow: 'hidden', marginRight: '1rem' }}>
+                    <p title={author} style={{ whiteSpace: 'nowrap' }}>{author}</p>
                 </div>
                 <div>
-                    <p style={{whiteSpace: "nowrap"}}>$ {precio > 0 ? precio : 0} USD</p>
+                    <p style={{ whiteSpace: 'nowrap' }}>$ {precio > 0 ? precio : 0} USD</p>
                 </div>
             </footer>
             <ButtonsContainer>
@@ -66,7 +64,7 @@ const CursoPreview = ({curso}) => {
                 </div>
             </ButtonsContainer>
         </CardContainer>
-     );
+  )
 }
- 
-export default CursoPreview;
+
+export default CursoPreview

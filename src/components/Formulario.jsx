@@ -1,12 +1,12 @@
 import styled from '@emotion/styled'
 import { useContext, useEffect, useState } from 'react'
-import Navegacion from '../../src/components/Layout/Navegacion'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import axiosClient from '../../src/config/axios'
-import CursoContext from '../../src/context/CursoContext'
-import { FormContainer } from '../../src/components/utils/styledComponents'
 import { useRouter } from 'next/router'
+import Navegacion from './Layout/Navegacion'
+import axiosClient from '../config/axios'
+import CursoContext from '../context/CursoContext'
+import { FormContainer } from './utils/styledComponents'
 
 const initialState = {
   nombre: '',
@@ -73,7 +73,7 @@ const Formulario = () => {
       author: Yup.string().required('El autor del curso es necesario')
     }),
 
-    onSubmit: async (values) => {
+    onSubmit: async values => {
       setMensaje({ data: 'cargando...', tipo: 'info' })
 
       if (disponible === null) {
@@ -121,7 +121,9 @@ const Formulario = () => {
 
         try {
           // axios put
-          await axiosClient.put(`/cursos/${cursoSlug}`, curso, { timeout: 5000 })
+          await axiosClient.put(`/cursos/${cursoSlug}`, curso, {
+            timeout: 5000
+          })
 
           window.alert('Curso actualizado correctamente!')
           router.push(`/cursos/${id}`)
@@ -165,9 +167,9 @@ const Formulario = () => {
     }
   })
 
-  const handleClickRadio = (value) => {
+  const handleClickRadio = value => {
     // convierte el valor a boolean
-    let boolean = value === 'true'
+    const boolean = value === 'true'
 
     setDisponible(boolean)
   }
@@ -193,7 +195,7 @@ const Formulario = () => {
       <FormContainer>
         <form onSubmit={formik.handleSubmit}>
           <div className="title-container">
-            {!isEdit ? (
+            {!isEdit && (
               <>
                 <h2 className="form-title">Crea un nuevo curso</h2>
                 <p>
@@ -201,7 +203,8 @@ const Formulario = () => {
                   curso
                 </p>
               </>
-            ) : (
+            )}
+            {isEdit && (
               <>
                 <h2 className="form-title">Actualizar curso</h2>
                 <p>Rellena los campos con la información actualizada</p>
@@ -330,9 +333,9 @@ const Formulario = () => {
                   name="disponible"
                   title="Disponibilidad del curso"
                   type="radio"
-                  value={true}
+                  value
                   checked={disponible === true}
-                  onChange={(event) => handleClickRadio(event.target.value)}
+                  onChange={event => handleClickRadio(event.target.value)}
                 />
                 <label htmlFor="disponible">Disponible</label>
               </div>
@@ -344,7 +347,7 @@ const Formulario = () => {
                   type="radio"
                   value={false}
                   checked={disponible === false}
-                  onChange={(event) => handleClickRadio(event.target.value)}
+                  onChange={event => handleClickRadio(event.target.value)}
                 />
                 <label htmlFor="proximamente">Próximamente</label>
               </div>
@@ -380,13 +383,11 @@ const Formulario = () => {
 
 export default Formulario
 
-const Error = ({ error, tipo }) => {
-  return (
-    <div className={tipo}>
-      <p>{error}</p>
-    </div>
-  )
-}
+const Error = ({ error, tipo }) => (
+  <div className={tipo}>
+    <p>{error}</p>
+  </div>
+)
 
 const BtnContainer = styled.div`
   width: 100%;

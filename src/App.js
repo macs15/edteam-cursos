@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import Inicio from './components/Incio';
-import Cursos from './components/Cursos';
-import Formulario from "./components/Formulario";
-import Curso from "./components/Curso";
-import CursoState from './context/CursoState';
-import CustomRoute from "./components/Route/CustomRoute";
-function App() {
+import Inicio from './components/Incio'
+import Cursos from './components/Cursos'
+import Formulario from './components/Formulario'
+import Curso from './components/Curso'
+import CursoState from './context/CursoState'
+import CustomRoute from './components/Route/CustomRoute'
+function App () {
   return (
     <CursoState>
       <Router>
@@ -19,7 +19,7 @@ function App() {
         </Switch>
       </Router>
     </CursoState>
-  );
+  )
 }
 
-export default App;
+export default App
