@@ -2,7 +2,7 @@
 
   
 
-Este proyecto es un CRUD sencillo hecho con **React.js** que usa **JSON Server** como una fake Rest API.
+Este proyecto es un CRUD sencillo hecho con **Next.js** que usa **JSON Server** como una fake Rest API.
 En el proyecto puedes crear, actualizar, eliminar y/o listar cursos. Lo desarrollé intentando seguir un poco el sitio web `https://ed.team/`.
 Además, este proyecto usa solo *componentes funcionales*, *hooks* y context para manejar el *ciclo de vida*, el *state* y para pasar *props* desde diferentes componentes.
 
